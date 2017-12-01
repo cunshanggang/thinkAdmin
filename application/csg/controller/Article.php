@@ -31,13 +31,33 @@ class Article extends BasicAdmin {
 //        return $this->fetch('article/index');
 //        return $this->fetch();
 //        return view();
-        $this->title = '文章管理';
-        $list = db("csg_article")->select();
+//        $this->title = '文章管理';
+//        echo "<pre>";
+//        print_r($this->title);
+//        echo "</pre>";
+//        $list = db("csg_article")->select();
 //        echo "<pre>";
 //        print_r($list);
 //        echo "</pre>";
-        $this->assign('list',$list);
-        return $this->fetch();
+//        $this->assign('list',$list);
+//        return $this->fetch();
+//        echo "<pre>";
+////        print_r($db);
+//        print_r(parent::_list($db));
+//        echo "</pre>";
+//        return parent::_list($db);
+        //--------------------------
+        $this->title = '文章管理';
+        $get = $this->request->get();
+        $db = Db::name($this->table);
+        foreach (['username', 'phone', 'mail'] as $key) {
+            (isset($get[$key]) && $get[$key] !== '') && $db->whereLike($key, "%{$get[$key]}%");
+        }
+        if (isset($get['date']) && $get['date'] !== '') {
+            list($start, $end) = explode('-', str_replace(' ', '', $get['date']));
+            $db->whereBetween('login_at', ["{$start} 00:00:00", "{$end} 23:59:59"]);
+        }
+        return parent::_list($db);
     }
 
     public function add() {
