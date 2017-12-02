@@ -23,10 +23,10 @@ class Article extends BasicAdmin {
 
     public function index() {
 
-        $str = "dddd";
-        $arr = array(1,2,3,4,5,6);
-        $this->assign('arr',$arr);
-        $this->assign('str',$str);
+//        $str = "dddd";
+//        $arr = array(1,2,3,4,5,6);
+//        $this->assign('arr',$arr);
+//        $this->assign('str',$str);
 //        return $this->fetch('article/add');//映射到另外一个模板上
 //        return $this->fetch('article/index');
 //        return $this->fetch();
@@ -57,6 +57,9 @@ class Article extends BasicAdmin {
             list($start, $end) = explode('-', str_replace(' ', '', $get['date']));
             $db->whereBetween('login_at', ["{$start} 00:00:00", "{$end} 23:59:59"]);
         }
+//        echo "<pre>";
+//        print_r(parent::_list($db));
+//        echo "</pre>";
         return parent::_list($db);
     }
 

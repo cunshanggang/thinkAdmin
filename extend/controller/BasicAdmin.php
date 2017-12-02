@@ -105,6 +105,7 @@ class BasicAdmin extends Controller
         }
         if ($isPage) {
             $rows = intval($this->request->get('rows', cookie('rows')));
+//            echo $rows;
             cookie('rows', $rows >= 10 ? $rows : 20);
             $page = $db->paginate($rows, $total, ['query' => $this->request->get('', '', 'urlencode')]);
             list($pattern, $replacement) = [['|href="(.*?)"|', '|pagination|'], ['data-open="$1"', 'pagination pull-right']];
