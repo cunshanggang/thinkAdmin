@@ -50,12 +50,12 @@ class Article extends BasicAdmin {
         $this->title = '文章管理';
         $get = $this->request->get();
         $db = Db::name($this->table);
-        foreach (['username', 'phone', 'mail'] as $key) {
+        foreach (['title', 'author', 'content'] as $key) {
             (isset($get[$key]) && $get[$key] !== '') && $db->whereLike($key, "%{$get[$key]}%");
         }
-        if (isset($get['date']) && $get['date'] !== '') {
-            list($start, $end) = explode('-', str_replace(' ', '', $get['date']));
-            $db->whereBetween('login_at', ["{$start} 00:00:00", "{$end} 23:59:59"]);
+        if (isset($get['time']) && $get['time'] !== '') {
+            list($start, $end) = explode('-', str_replace(' ', '', $get['time']));
+            $db->whereBetween('time', ["{$start} 00:00:00", "{$end} 23:59:59"]);
         }
 //        echo "<pre>";
 //        print_r(parent::_list($db));
@@ -67,7 +67,7 @@ class Article extends BasicAdmin {
 //        echo "<pre>";
 //        print_r($_POST);
 //        echo "</pre>";
-        return $this->fetch('article/add');
+        return $this->_form($this->table, 'form');
     }
 
     //删除文章
