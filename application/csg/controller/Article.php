@@ -67,9 +67,17 @@ class Article extends BasicAdmin {
 //        echo "<pre>";
 //        print_r($_POST);
 //        echo "</pre>";
+
         return $this->_form($this->table, 'form');
+//        return $this->fetch('article/form');
     }
 
+    public function edit() {
+        echo "<pre>";
+        print_r($_REQUEST);
+        echo "</pre>";
+        return $this->_form($this->table, 'form');
+    }
     //删除文章
     public function del() {
         if (DataService::update($this->table)) {
