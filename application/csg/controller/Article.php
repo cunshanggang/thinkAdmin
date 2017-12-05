@@ -12,6 +12,7 @@ use service\DataService;
 use think\Db;
 use think\View;
 use think\Request;
+use app\csg\model\Article as Art;
 
 class Article extends BasicAdmin {
 
@@ -123,6 +124,14 @@ class Article extends BasicAdmin {
 
     //测试
     public function test() {
+        //实例化模板并使用里面的方法
+        $obj = new Art();
+//        $obj->test();
+//        Art::test();//该方法不行
+        echo "<hr />";
+        echo "<pre>";
+        print_r($obj->select());
+        echo "</pre>";
         return $this->fetch('article/test');
     }
 }
