@@ -128,10 +128,10 @@ class Article extends BasicAdmin {
         $obj = new Art();
 //        $obj->test();
 //        Art::test();//该方法不行
-        echo "<hr />";
-        echo "<pre>";
-        print_r($obj->select());
-        echo "</pre>";
+//        echo "<hr />";
+//        echo "<pre>";
+//        print_r($obj->select());
+//        echo "</pre>";
         return $this->fetch('article/test');
     }
 }
