@@ -73,10 +73,44 @@ class Article extends BasicAdmin {
     }
 
     public function edit() {
-        echo "<pre>";
-        print_r($_REQUEST);
-        echo "</pre>";
+//        echo "<pre>";
+//        print_r($_REQUEST);
+//        echo "</pre>";
+
         return $this->_form($this->table, 'form');
+    }
+
+//    public function _form_filter(&$data)
+//    {
+//        if ($this->request->isPost()) {
+//            if (isset($data['authorize']) && is_array($data['authorize'])) {
+//                $data['authorize'] = join(',', $data['authorize']);
+//            }
+//            if (isset($data['id'])) {
+//                unset($data['username']);
+//            } elseif (Db::name($this->table)->where(['username' => $data['username']])->count() > 0) {
+//                $this->error('用户账号已经存在，请使用其它账号！');
+//            }
+//        } else {
+//            $data['authorize'] = explode(',', isset($data['authorize']) ? $data['authorize'] : '');
+//            $this->assign('authorizes', Db::name('SystemAuth')->where(['status' => '1'])->select());
+////            echo "<pre>";
+////            print_r($_REQUEST);
+////            echo "</pre>";
+////            $result = Db::name($this->table)->select();
+////            $this->assign('vo',$result);
+////            echo "<pre>";
+////            print_r($result);
+////            echo "</pre>";
+//        }
+//    }
+
+    //更改状态
+    public function check() {
+        if (DataService::update($this->table)) {
+            $this->success("审核成功！", '');
+        }
+        $this->error("审核失败，请稍候再试！");
     }
     //删除文章
     public function del() {
@@ -85,5 +119,10 @@ class Article extends BasicAdmin {
         }
         $this->error("文章删除失败，请稍候再试！");
 
+    }
+
+    //测试
+    public function test() {
+        return $this->fetch('article/test');
     }
 }

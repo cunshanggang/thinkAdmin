@@ -1,11 +1,11 @@
 <form class="layui-form layui-box" style='padding:25px 30px 20px 0' action="__SELF__" data-auto="true" method="post">
 
     <div class="layui-form-item">
-        <label class="layui-form-label">标题{$vo.title}</label>
+        <label class="layui-form-label">标题</label>
         <div class="layui-input-block">
             {if $vo and isset($vo.title)}
-            <input readonly="readonly" disabled="disabled" name="title" value='{$vo.title|default=""}'
-                   required="required" title="请输入标题" placeholder="请输入标题" class="layui-input layui-disabled">
+            <input name="title" value='{$vo.title|default=""}'
+                   required="required" title="请输入标题" placeholder="请输入标题" class="layui-input">
             {else}
             <input name="title" value='{$vo.title|default=""}' required="required" pattern="^.{1,}$"
                    title="请输入文章标题" placeholder="请输入" class="layui-input">
@@ -21,13 +21,18 @@
         </div>
     </div>
 
-    <textarea name="content"></textarea>
+    <div class="layui-form-item">
+        <label class="layui-form-label">内容</label>
+        <div class="layui-input-block">
+            <textarea name="content"></textarea>
+        </div>
+    </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">状态</label>
         <div class="layui-input-block">
             {if $vo and isset($vo.status)}
-                {if $vo.stutus eq 1}
+                {if $vo.status eq 1}
                     <label class="think-checkbox">
                         <input type="radio" checked name="status" value='{$vo.status|default="1"}' lay-ignore> 通过
                     </label>
@@ -75,9 +80,17 @@
     require(['ckeditor'], function () {
         var editor = window.createEditor('[name="content"]');
         // 设置内容
-        editor.setData('');
+        editor.setData('{$vo.content|default=""}');
+
         // 获取内容
         var content = editor.getData();
         //console.log(content);
+
+//        var editor1 = window.createEditor('[name="content1"]');
+//        // 设置内容
+//        editor1.setData('');
+//
+//        // 获取内容
+//        var content1 = editor.getData();
     });
 </script>

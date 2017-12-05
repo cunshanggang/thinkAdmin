@@ -60,8 +60,10 @@ class BasicAdmin extends Controller
                 empty($this->title) || $this->assign('title', $this->title);
                 return $this->fetch($tplFile, ['vo' => $vo]);
             }
+
             return $vo;
         }
+
         // POST请求, 数据自动存库
         $data = array_merge($this->request->post(), $extendData);
         if (false !== $this->_callback('_form_filter', $data)) {
