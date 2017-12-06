@@ -134,4 +134,11 @@ class Article extends BasicAdmin {
 //        echo "</pre>";
         return $this->fetch('article/test');
     }
+
+    //上传
+    public function upload() {
+        echo "<pre>";
+        print_r($_FILES);
+        echo "</pre>";
+    }
 }
