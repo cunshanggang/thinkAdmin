@@ -12,7 +12,7 @@
 // | github开源项目：https://github.com/zoujingli/Think.Admin
 // +----------------------------------------------------------------------
 
-namespace app\admin\controller;
+namespace app\csg\controller;
 
 use controller\BasicAdmin;
 use service\FileService;
@@ -52,14 +52,8 @@ class Plugs extends BasicAdmin
     {
         $file = $this->request->file('file');
         $ext = strtolower(pathinfo($file->getInfo('name'), 4));
-//        echo "<pre>";
-//        print_r($ext);
-//        echo "</pre>";//exit;
         $md5 = str_split($this->request->post('md5'), 16);
         $filename = join('/', $md5) . ".{$ext}";
-//        echo "<pre>";
-//        print_r($filename);
-//        echo "</pre>";
         if (!in_array($ext, explode(',', strtolower(sysconf('storage_local_exts'))))) {
             return json(['code' => 'ERROR', 'msg' => '文件上传类型受限']);
         }
