@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50611
 File Encoding         : 65001
 
-Date: 2017-12-07 17:58:19
+Date: 2017-12-08 17:15:14
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -69,11 +69,12 @@ CREATE TABLE `system_auth` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_system_auth_title` (`title`) USING BTREE,
   KEY `index_system_auth_status` (`status`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='系统权限表';
 
 -- ----------------------------
 -- Records of system_auth
 -- ----------------------------
+INSERT INTO `system_auth` VALUES ('1', '一般管理员', '1', '0', '一般管理员的操作权限', '0', '2017-12-08 11:26:42');
 
 -- ----------------------------
 -- Table structure for system_auth_node
@@ -89,6 +90,98 @@ CREATE TABLE `system_auth_node` (
 -- ----------------------------
 -- Records of system_auth_node
 -- ----------------------------
+INSERT INTO `system_auth_node` VALUES ('1', 'admin');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/auth');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/auth/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/auth/apply');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/auth/add');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/auth/edit');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/auth/forbid');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/auth/resume');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/auth/del');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/config');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/config/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/config/file');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/log');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/log/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/log/del');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/menu');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/menu/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/menu/add');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/menu/edit');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/menu/del');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/menu/forbid');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/menu/resume');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/node');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/node/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/node/save');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user/auth');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user/add');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user/edit');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user/pass');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user/del');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user/forbid');
+INSERT INTO `system_auth_node` VALUES ('1', 'admin/user/resume');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/article');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/article/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/article/add');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/article/edit');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/article/check');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/article/del');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/article/test');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/article/upload');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/plugs');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/plugs/upfile');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/plugs/upload');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/plugs/upstate');
+INSERT INTO `system_auth_node` VALUES ('1', 'csg/plugs/icon');
+INSERT INTO `system_auth_node` VALUES ('1', 'demo');
+INSERT INTO `system_auth_node` VALUES ('1', 'demo/plugs');
+INSERT INTO `system_auth_node` VALUES ('1', 'demo/plugs/file');
+INSERT INTO `system_auth_node` VALUES ('1', 'demo/plugs/region');
+INSERT INTO `system_auth_node` VALUES ('1', 'demo/plugs/editor');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/config');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/config/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/config/pay');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans/back');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans/backadd');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans/tagset');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans/backdel');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans/tagadd');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans/tagdel');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/fans/sync');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys/add');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys/edit');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys/del');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys/forbid');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys/resume');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys/subscribe');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/keys/defaults');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/menu');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/menu/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/menu/edit');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/menu/cancel');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/news');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/news/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/news/select');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/news/image');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/news/add');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/news/edit');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/news/del');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/news/push');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/tags');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/tags/index');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/tags/add');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/tags/edit');
+INSERT INTO `system_auth_node` VALUES ('1', 'wechat/tags/sync');
 
 -- ----------------------------
 -- Table structure for system_config
@@ -105,8 +198,8 @@ CREATE TABLE `system_config` (
 -- ----------------------------
 -- Records of system_config
 -- ----------------------------
-INSERT INTO `system_config` VALUES ('148', 'site_name', 'Think.Admin Demo');
-INSERT INTO `system_config` VALUES ('149', 'site_copy', '广州楚才信息科技有限公司 © 2014~2017');
+INSERT INTO `system_config` VALUES ('148', 'site_name', 'csg');
+INSERT INTO `system_config` VALUES ('149', 'site_copy', 'csg');
 INSERT INTO `system_config` VALUES ('164', 'storage_type', 'local');
 INSERT INTO `system_config` VALUES ('165', 'storage_qiniu_is_https', '1');
 INSERT INTO `system_config` VALUES ('166', 'storage_qiniu_bucket', 'static');
@@ -114,9 +207,9 @@ INSERT INTO `system_config` VALUES ('167', 'storage_qiniu_domain', 'static.ctolo
 INSERT INTO `system_config` VALUES ('168', 'storage_qiniu_access_key', 'OAFHGzCgZjod2-s4xr-g5ptkXsNbxDO_t2fozIEC');
 INSERT INTO `system_config` VALUES ('169', 'storage_qiniu_secret_key', 'gy0aYdSFMSayQ4kMkgUeEeJRLThVjLpUJoPFxd-Z');
 INSERT INTO `system_config` VALUES ('170', 'storage_qiniu_region', '华东');
-INSERT INTO `system_config` VALUES ('173', 'app_name', 'Think.Admin');
-INSERT INTO `system_config` VALUES ('174', 'app_version', '2.00 dev');
-INSERT INTO `system_config` VALUES ('176', 'browser_icon', 'https://think.ctolog.com/static/upload/f47b8fe06e38ae99/08e8398da45583b9.png');
+INSERT INTO `system_config` VALUES ('173', 'app_name', 'CSG');
+INSERT INTO `system_config` VALUES ('174', 'app_version', ' .');
+INSERT INTO `system_config` VALUES ('176', 'browser_icon', 'http://localhost/thinkAdmin/static/upload/c87d26258c239548/4e00d9bb38072ef4.png');
 INSERT INTO `system_config` VALUES ('184', 'wechat_appid', 'wx60a43dd8161666d4');
 INSERT INTO `system_config` VALUES ('185', 'wechat_appsecret', '062938ddcfe0d69786e4e3d9dcbb08aa');
 INSERT INTO `system_config` VALUES ('186', 'wechat_token', 'mytoken');
@@ -132,7 +225,7 @@ INSERT INTO `system_config` VALUES ('200', 'storage_oss_keyid', 'WjeX0AYSfgy5VbX
 INSERT INTO `system_config` VALUES ('201', 'storage_oss_secret', 'hQTENHy6MYVUTgwjcgfOCq5gckm2Lp');
 INSERT INTO `system_config` VALUES ('202', 'storage_oss_domain', 'think-oss.oss-cn-shanghai.aliyuncs.com');
 INSERT INTO `system_config` VALUES ('203', 'storage_oss_is_https', '1');
-INSERT INTO `system_config` VALUES ('204', 'storage_local_exts', '');
+INSERT INTO `system_config` VALUES ('204', 'storage_local_exts', 'jpg,png,gif');
 
 -- ----------------------------
 -- Table structure for system_log
@@ -147,7 +240,7 @@ CREATE TABLE `system_log` (
   `content` text NOT NULL COMMENT '操作内容描述',
   `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COMMENT='系统操作日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COMMENT='系统操作日志表';
 
 -- ----------------------------
 -- Records of system_log
@@ -174,6 +267,26 @@ INSERT INTO `system_log` VALUES ('19', '0.0.0.0', 'admin/login/index', 'admin', 
 INSERT INTO `system_log` VALUES ('20', '0.0.0.0', 'admin/login/index', 'admin', '系统管理', '用户登录系统成功', '2017-12-05 10:30:29');
 INSERT INTO `system_log` VALUES ('21', '0.0.0.0', 'admin/login/index', 'admin', '系统管理', '用户登录系统成功', '2017-12-07 14:54:25');
 INSERT INTO `system_log` VALUES ('22', '0.0.0.0', 'admin/login/index', 'admin', '系统管理', '用户登录系统成功', '2017-12-07 14:54:43');
+INSERT INTO `system_log` VALUES ('23', '0.0.0.0', 'admin/login/index', 'admin', '系统管理', '用户登录系统成功', '2017-12-08 09:08:20');
+INSERT INTO `system_log` VALUES ('24', '0.0.0.0', 'admin/config/file', 'admin', '系统管理', '系统参数配置成功', '2017-12-08 10:13:48');
+INSERT INTO `system_log` VALUES ('25', '0.0.0.0', 'admin/config/file', 'admin', '系统管理', '系统参数配置成功', '2017-12-08 10:14:01');
+INSERT INTO `system_log` VALUES ('26', '0.0.0.0', 'admin/login/out', 'admin', '系统管理', '用户退出系统成功', '2017-12-08 10:59:44');
+INSERT INTO `system_log` VALUES ('27', '0.0.0.0', 'admin/login/index', 'test', '系统管理', '用户登录系统成功', '2017-12-08 10:59:56');
+INSERT INTO `system_log` VALUES ('28', '0.0.0.0', 'admin/login/out', 'test', '系统管理', '用户退出系统成功', '2017-12-08 11:00:14');
+INSERT INTO `system_log` VALUES ('29', '0.0.0.0', 'admin/login/index', 'admin', '系统管理', '用户登录系统成功', '2017-12-08 11:00:19');
+INSERT INTO `system_log` VALUES ('30', '0.0.0.0', 'admin/login/out', 'admin', '系统管理', '用户退出系统成功', '2017-12-08 11:28:37');
+INSERT INTO `system_log` VALUES ('31', '0.0.0.0', 'admin/login/index', 'test', '系统管理', '用户登录系统成功', '2017-12-08 11:28:53');
+INSERT INTO `system_log` VALUES ('32', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 16:29:46');
+INSERT INTO `system_log` VALUES ('33', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:05:45');
+INSERT INTO `system_log` VALUES ('34', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:05:49');
+INSERT INTO `system_log` VALUES ('35', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:06:35');
+INSERT INTO `system_log` VALUES ('36', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:06:39');
+INSERT INTO `system_log` VALUES ('37', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:07:17');
+INSERT INTO `system_log` VALUES ('38', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:08:37');
+INSERT INTO `system_log` VALUES ('39', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:08:51');
+INSERT INTO `system_log` VALUES ('40', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:09:06');
+INSERT INTO `system_log` VALUES ('41', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:09:26');
+INSERT INTO `system_log` VALUES ('42', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:09:38');
 
 -- ----------------------------
 -- Table structure for system_menu
@@ -376,12 +489,13 @@ CREATE TABLE `system_user` (
   `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_system_user_username` (`username`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10001 DEFAULT CHARSET=utf8 COMMENT='系统用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=10002 DEFAULT CHARSET=utf8 COMMENT='系统用户表';
 
 -- ----------------------------
 -- Records of system_user
 -- ----------------------------
-INSERT INTO `system_user` VALUES ('10000', 'admin', '21232f297a57a5a743894a0e4a801fc3', '22222222', 'sdfsd@Qq.com1', '13888888855', 'dfgsdfgsfd', '27058', '2017-12-07 14:54:42', '1', '301,302,303,304', '0', null, '2015-11-13 15:14:22');
+INSERT INTO `system_user` VALUES ('10000', 'admin', '21232f297a57a5a743894a0e4a801fc3', '22222222', 'sdfsd@Qq.com1', '13888888855', 'dfgsdfgsfd', '27060', '2017-12-08 11:00:19', '1', '301,302,303,304', '0', null, '2015-11-13 15:14:22');
+INSERT INTO `system_user` VALUES ('10001', 'test', 'e10adc3949ba59abbe56e057f20f883e', null, '', '', '', '2', '2017-12-08 11:28:53', '1', '1', '0', null, '2017-12-08 10:58:59');
 
 -- ----------------------------
 -- Table structure for wechat_fans

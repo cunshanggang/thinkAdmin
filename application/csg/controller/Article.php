@@ -137,8 +137,12 @@ class Article extends BasicAdmin {
 
     //上传
     public function upload() {
+        $obj = $this->request->post();
         echo "<pre>";
-        print_r($_FILES);
+        print_r($this->request->post());
         echo "</pre>";
+        echo "yaoMing";
+        echo "<br>";
+//        echo $obj.data.msg;
     }
 }
