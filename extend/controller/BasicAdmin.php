@@ -104,6 +104,8 @@ class BasicAdmin extends Controller
         if (null === $db->getOptions('order')) {
             $fields = $db->getTableFields($db->getTable());
             in_array('sort', $fields) && $db->order('sort asc');
+//            in_array('sort', $fields) && $db->order('id', 'desc');
+//            in_array('sort', $fields) && $db->order(['id'=>'desc']);
         }
         if ($isPage) {
             $rows = intval($this->request->get('rows', cookie('rows')));

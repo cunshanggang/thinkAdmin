@@ -27,7 +27,6 @@
             <input name="author" value="{$Think.get.author|default=''}" placeholder="请输入作者" class="layui-input">
         </div>
     </div>
-
     <div class="layui-form-item layui-inline">
         <label class="layui-form-label">内容</label>
         <div class="layui-input-inline">
@@ -62,6 +61,7 @@
             </th>
             <th class='text-left nowrap'>标题</th>
             <th class='text-left nowrap'>作者</th>
+            <th class='text-left nowrap'>封面图片</th>
             <th class='text-left nowrap'>内容</th>
             <th class='text-left nowrap'>发布时间</th>
             <!--<th class='text-left nowrap'>最后登录</th>-->
@@ -81,6 +81,16 @@
             <td class='text-left nowrap'>
                 <!--{$vo.phone|default="<span class='color-desc'>还没有设置手机号</span>"}-->
                 {$vo.author}
+            </td>
+            <td class='text-left nowrap'>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">BrowserIcon <span class="nowrap">(浏览器图标)</span></label>
+                    <div class='col-sm-8'>
+                        <img data-tips-image style="height:auto;max-height:32px;min-width:32px" src="{$vo.pic_url}"/>
+                        <input type="hidden" name="pic_url" onchange="$(this).prev('img').attr('src', this.value)"
+                               value="{$vo.pic_url}" class="layui-input">
+                    </div>
+                </div>
             </td>
             <td class='text-left nowrap'>
                 <!--{$vo.mail|default="<span class='color-desc'>还没有设置邮箱</span>"}-->
