@@ -25,7 +25,7 @@
     </style>
 </head>
 <body>
-<form onsubmit="return false;" action="{:url('article/upload')}" data-auto="true" method="post" class='form-horizontal' style='padding-top:20px'>
+<form onsubmit="return true;" action="{:url('article/upload')}" data-auto="true" method="post" class='form-horizontal' style='padding-top:20px'>
 
     <div style="position:relative">
         <input type="hidden" name="file_2">
@@ -37,6 +37,16 @@
         var tpl = '<div class="uploadimage transition uploadimagemtl"><a href="javascript:void(0)" class="layui-icon upload-option-button">ဆ</a></div>';
         $('[name="file_2"]').on('change', function () {
             var input = this, values = [], srcs = this.value.split('|');
+//            alert(this.value);
+            var src = this.value;
+            alert(srcs);
+            alert(typeof srcs);
+            console.log(src);
+            $.ajax({
+                type:"POST",
+                url:"{:url('article/upload')}",
+                data:"src="+srcs
+            });
             $(this).prevAll('.uploadimage').map(function () {
                 values.push($(this).attr('data-tips-image'));
             }), $(this).prevAll('.uploadimage').remove();
