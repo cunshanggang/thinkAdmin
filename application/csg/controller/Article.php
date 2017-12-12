@@ -146,4 +146,9 @@ class Article extends BasicAdmin {
         echo "<br>";
 //        echo $obj.data.msg;
     }
+
+    //表格
+    public function excel() {
+        return $this->fetch();
+    }
 }

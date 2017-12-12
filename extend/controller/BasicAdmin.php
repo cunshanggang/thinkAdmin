@@ -115,8 +115,11 @@ class BasicAdmin extends Controller
             list($pattern, $replacement) = [['|href="(.*?)"|', '|pagination|'], ['data-open="$1"', 'pagination pull-right']];
             list($result['list'], $result['page']) = [$page->all(), preg_replace($pattern, $replacement, $page->render())];
         } else {
-            $result['list'] = $db->select();
+//            $result['list'] = $db->select();//源代码
+            //csg 修改列表排序
+            $result['list'] = $db->order('id','desc')->select();
         }
+
         if (false !== $this->_callback('_data_filter', $result['list']) && $isDisplay) {
             !empty($this->title) && $this->assign('title', $this->title);
             return $this->fetch('', $result);
