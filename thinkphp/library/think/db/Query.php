@@ -1338,12 +1338,15 @@ class Query
 
             $bind    = $this->bind;
             $total   = $this->count();
-            $results = $this->options($options)->bind($bind)->page($page, $listRows)->select();
+            //csg 加上order('id','desc')
+            $results = $this->options($options)->bind($bind)->page($page, $listRows)->order('id','desc')->select();
         } elseif ($simple) {
-            $results = $this->limit(($page - 1) * $listRows, $listRows + 1)->select();
+            //csg 加上order('id','desc')
+            $results = $this->limit(($page - 1) * $listRows, $listRows + 1)->order('id','desc')->select();
             $total   = null;
         } else {
-            $results = $this->page($page, $listRows)->select();
+            //csg 加上order('id','desc')
+            $results = $this->page($page, $listRows)->order('id','desc')->select();
         }
         return $class::make($results, $listRows, $page, $total, $simple, $config);
     }

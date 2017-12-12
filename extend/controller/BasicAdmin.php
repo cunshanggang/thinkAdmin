@@ -100,13 +100,13 @@ class BasicAdmin extends Controller
             }
             $this->success('列表排序成功, 正在刷新列表', '');
         }
+
         // 列表数据查询与显示
         if (null === $db->getOptions('order')) {
             $fields = $db->getTableFields($db->getTable());
             in_array('sort', $fields) && $db->order('sort asc');
-//            in_array('sort', $fields) && $db->order('id', 'desc');
-//            in_array('sort', $fields) && $db->order(['id'=>'desc']);
         }
+
         if ($isPage) {
             $rows = intval($this->request->get('rows', cookie('rows')));
 //            echo $rows;
