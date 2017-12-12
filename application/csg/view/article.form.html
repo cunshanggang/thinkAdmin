@@ -21,18 +21,23 @@
         </div>
     </div>
     <!--封面 start -->
-    <div class="form-group">
-        <div style="position:relative;">
-            <input type="hidden" name="pic_url">
-            <a data-file="mut" data-field="pic_url" data-type="png,jpg" data-uptype="local" href="javascript:void(0)">上传图片</a>
-        </div>
-        {if isset($vo.pic_url)}
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">封面</label>
+        <div class="layui-input-block">
+            {if isset($vo.pic_url)}
             <div class='col-sm-8'>
                 <img data-tips-image style="height:auto;max-height:32px;min-width:32px" src='{$vo.pic_url|default=""}'/>
                 <input type="hidden" name="pic_url" onchange="$(this).prev('img').attr('src', this.value)"
                        value='{$vo.pic_url|default=""}' class="layui-input">
+                <input type="hidden" name="pic_url">
+                <a data-file="mut" data-field="pic_url" data-type="png,jpg" data-uptype="local" href="javascript:void(0)">上传图片</a>
             </div>
-        {/if}
+            {else}
+                <input type="hidden" name="pic_url" id="add">
+                <a data-file="mut" data-field="pic_url" data-type="png,jpg" data-uptype="local" href="javascript:void(0)">上传图片</a>
+            {/if}
+        </div>
     </div>
     <!--封面 end -->
     <div class="layui-form-item">
@@ -112,7 +117,7 @@
 //上传图片 start
             require(['jquery'], function () {
                 var tpl = '<div class="uploadimage transition uploadimagemtl"><a href="javascript:void(0)" class="layui-icon upload-option-button">ဆ</a></div>';
-                $('[name="pic_url"]').on('change', function () {
+                $('[id="add"]').on('change', function () {
                     var input = this, values = [], srcs = this.value.split('|');
 //            alert(this.value);
 //                    var src = this.value;
