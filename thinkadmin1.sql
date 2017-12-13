@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50611
 File Encoding         : 65001
 
-Date: 2017-12-08 17:15:14
+Date: 2017-12-13 17:25:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,36 +23,42 @@ CREATE TABLE `csg_article` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '序号',
   `title` varchar(30) NOT NULL COMMENT '文章标题',
   `author` varchar(10) NOT NULL COMMENT '作者',
+  `pic_url` varchar(100) NOT NULL COMMENT '封面图片路径',
   `content` text NOT NULL COMMENT '文章内容',
   `time` varchar(10) NOT NULL COMMENT '发布时间',
   `status` tinyint(1) NOT NULL COMMENT '状态：0：审核 1：通过',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of csg_article
 -- ----------------------------
-INSERT INTO `csg_article` VALUES ('2', '标题2', 'csg', '你好姚明.', '1512028345', '1');
-INSERT INTO `csg_article` VALUES ('3', '标题3', 'csg', '你好李娜,232323', '1512028345', '0');
-INSERT INTO `csg_article` VALUES ('4', '标题4', 'csg', '123456', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('5', '标题5', 'csg', '你好姚明好好\r\n', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('6', '标题6', 'csg', '你好姚明', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('7', '标题7', 'csg', '12132', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('8', '标题8', 'csg', '你好姚明7', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('9', '标题9', 'csg', '你好姚明8', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('10', '标题10', 'csg', '你好姚明9', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('11', '标题11', 'csg', '你好姚明10', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('12', '标题12', 'csg', '你好姚明11', '1512107366', '1');
-INSERT INTO `csg_article` VALUES ('13', '标题13', 'csg', '你好姚明13', '1512114163', '1');
-INSERT INTO `csg_article` VALUES ('14', '标题14', 'csg', '你好姚明14', '1512114312', '1');
-INSERT INTO `csg_article` VALUES ('15', '标题15', 'csg', '你好姚明15', '1512114312', '1');
-INSERT INTO `csg_article` VALUES ('16', '标题16', 'csg', '你好姚明16', '1512114312', '1');
-INSERT INTO `csg_article` VALUES ('17', '标题17', 'csg', '你好姚明17', '1512114312', '1');
-INSERT INTO `csg_article` VALUES ('18', '标题18', 'csg', '你好姚明18', '1512114312', '1');
-INSERT INTO `csg_article` VALUES ('19', '标题19', 'csg', '你好姚明19', '1512114312', '1');
-INSERT INTO `csg_article` VALUES ('20', '标题20', 'csg', '你好姚明20', '1512114312', '1');
-INSERT INTO `csg_article` VALUES ('21', '标题21', 'csg', '546454646\r\n', '1512458250', '1');
-INSERT INTO `csg_article` VALUES ('22', '标题22', 'csg', '内容22', '1512458232', '1');
+INSERT INTO `csg_article` VALUES ('2', '标题2', 'csg', 'http://localhost/thinkAdmin/static/upload/98819a1c217dcffb/293351fe75aed870.png', '你好姚明.', '1512028345', '1');
+INSERT INTO `csg_article` VALUES ('3', '标题3', 'csg', '', '你好李娜,232323', '1512028345', '0');
+INSERT INTO `csg_article` VALUES ('4', '标题4', 'csg', '', '123456', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('5', '标题5', 'csg', '', '你好姚明好好\r\n', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('6', '标题6', 'csg', '', '你好姚明', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('7', '标题7', 'csg', '', '12132', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('8', '标题8', 'csg', '', '你好姚明7', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('9', '标题9', 'csg', '', '你好姚明8', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('10', '标题10', 'csg', '', '你好姚明9', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('11', '标题11', 'csg', '', '你好姚明10', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('12', '标题12', 'csg', '', '你好姚明11', '1512107366', '1');
+INSERT INTO `csg_article` VALUES ('13', '标题13', 'csg', '', '你好姚明13', '1512114163', '1');
+INSERT INTO `csg_article` VALUES ('14', '标题14', 'csg', '', '你好姚明14', '1512114312', '1');
+INSERT INTO `csg_article` VALUES ('15', '标题15', 'csg', '', '你好姚明15', '1512114312', '1');
+INSERT INTO `csg_article` VALUES ('16', '标题16', 'csg', '', '你好姚明16', '1512114312', '1');
+INSERT INTO `csg_article` VALUES ('17', '标题17', 'csg', '', '你好姚明17', '1512114312', '1');
+INSERT INTO `csg_article` VALUES ('18', '标题18', 'csg', '', '你好姚明18', '1512114312', '0');
+INSERT INTO `csg_article` VALUES ('19', '标题19', 'csg', '', '你好姚明19', '1512114312', '1');
+INSERT INTO `csg_article` VALUES ('20', '标题20', 'csg', '', '你好姚明20', '1512114312', '1');
+INSERT INTO `csg_article` VALUES ('21', '标题21', 'csg', '', '546454646\r\n', '1512458250', '1');
+INSERT INTO `csg_article` VALUES ('22', '标题22', 'csg', 'http://localhost/thinkAdmin/static/upload/98819a1c217dcffb/293351fe75aed870.png', '内容22', '1512458232', '1');
+INSERT INTO `csg_article` VALUES ('23', '封面图片上传', 'csg', 'http://localhost/thinkadmin/static/upload/c87d26258c239548/4e00d9bb38072ef4.png', '你好姚明', '1512962286', '1');
+INSERT INTO `csg_article` VALUES ('24', '33333', '33333', 'http://localhost/thinkadmin/static/upload/c87d26258c239548/4e00d9bb38072ef4.jpg', '333333', '1512971519', '1');
+INSERT INTO `csg_article` VALUES ('25', '55555', '55555', 'http://localhost/thinkadmin/static/upload/6e8039aa4ca1ae34/be47d2216efda943.jpg', '555555', '1512971647', '1');
+INSERT INTO `csg_article` VALUES ('26', '66666', '66666', 'http://localhost/thinkAdmin/static/upload/98819a1c217dcffb/293351fe75aed870.png', '666666', '1512971892', '1');
+INSERT INTO `csg_article` VALUES ('27', '你好姚明', 'dsg', 'http://localhost/thinkAdmin/static/upload/de7681a78fb86f86/1aab7e5da9df01f3.png', '你好姚明！46456465456', '1513058388', '1');
 
 -- ----------------------------
 -- Table structure for system_auth
@@ -209,7 +215,7 @@ INSERT INTO `system_config` VALUES ('169', 'storage_qiniu_secret_key', 'gy0aYdSF
 INSERT INTO `system_config` VALUES ('170', 'storage_qiniu_region', '华东');
 INSERT INTO `system_config` VALUES ('173', 'app_name', 'CSG');
 INSERT INTO `system_config` VALUES ('174', 'app_version', ' .');
-INSERT INTO `system_config` VALUES ('176', 'browser_icon', 'http://localhost/thinkAdmin/static/upload/c87d26258c239548/4e00d9bb38072ef4.png');
+INSERT INTO `system_config` VALUES ('176', 'browser_icon', 'http://localhost/thinkadmin/static/upload/98819a1c217dcffb/293351fe75aed870.png');
 INSERT INTO `system_config` VALUES ('184', 'wechat_appid', 'wx60a43dd8161666d4');
 INSERT INTO `system_config` VALUES ('185', 'wechat_appsecret', '062938ddcfe0d69786e4e3d9dcbb08aa');
 INSERT INTO `system_config` VALUES ('186', 'wechat_token', 'mytoken');
@@ -225,7 +231,7 @@ INSERT INTO `system_config` VALUES ('200', 'storage_oss_keyid', 'WjeX0AYSfgy5VbX
 INSERT INTO `system_config` VALUES ('201', 'storage_oss_secret', 'hQTENHy6MYVUTgwjcgfOCq5gckm2Lp');
 INSERT INTO `system_config` VALUES ('202', 'storage_oss_domain', 'think-oss.oss-cn-shanghai.aliyuncs.com');
 INSERT INTO `system_config` VALUES ('203', 'storage_oss_is_https', '1');
-INSERT INTO `system_config` VALUES ('204', 'storage_local_exts', 'jpg,png,gif');
+INSERT INTO `system_config` VALUES ('204', 'storage_local_exts', 'jpg,png,gif,xls,xlsx,zip');
 
 -- ----------------------------
 -- Table structure for system_log
@@ -240,7 +246,7 @@ CREATE TABLE `system_log` (
   `content` text NOT NULL COMMENT '操作内容描述',
   `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COMMENT='系统操作日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 COMMENT='系统操作日志表';
 
 -- ----------------------------
 -- Records of system_log
@@ -287,6 +293,18 @@ INSERT INTO `system_log` VALUES ('39', '0.0.0.0', 'admin/config/index', 'test', 
 INSERT INTO `system_log` VALUES ('40', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:09:06');
 INSERT INTO `system_log` VALUES ('41', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:09:26');
 INSERT INTO `system_log` VALUES ('42', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-08 17:09:38');
+INSERT INTO `system_log` VALUES ('43', '0.0.0.0', 'admin/login/index', 'admin', '系统管理', '用户登录系统成功', '2017-12-11 09:19:45');
+INSERT INTO `system_log` VALUES ('44', '0.0.0.0', 'admin/login/out', 'admin', '系统管理', '用户退出系统成功', '2017-12-11 11:27:00');
+INSERT INTO `system_log` VALUES ('45', '0.0.0.0', 'admin/login/index', 'test', '系统管理', '用户登录系统成功', '2017-12-11 11:27:20');
+INSERT INTO `system_log` VALUES ('46', '0.0.0.0', 'admin/login/index', 'test', '系统管理', '用户登录系统成功', '2017-12-11 11:37:18');
+INSERT INTO `system_log` VALUES ('47', '0.0.0.0', 'admin/config/index', 'test', '系统管理', '系统参数配置成功', '2017-12-11 11:40:45');
+INSERT INTO `system_log` VALUES ('48', '0.0.0.0', 'admin/login/index', 'test', '系统管理', '用户登录系统成功', '2017-12-12 11:31:49');
+INSERT INTO `system_log` VALUES ('49', '0.0.0.0', 'admin/login/out', 'test', '系统管理', '用户退出系统成功', '2017-12-12 14:13:37');
+INSERT INTO `system_log` VALUES ('50', '0.0.0.0', 'admin/login/index', 'test', '系统管理', '用户登录系统成功', '2017-12-12 14:13:50');
+INSERT INTO `system_log` VALUES ('51', '0.0.0.0', 'admin/login/index', 'test', '系统管理', '用户登录系统成功', '2017-12-12 15:48:24');
+INSERT INTO `system_log` VALUES ('52', '0.0.0.0', 'admin/config/file', 'test', '系统管理', '系统参数配置成功', '2017-12-12 16:39:01');
+INSERT INTO `system_log` VALUES ('53', '0.0.0.0', 'admin/config/file', 'test', '系统管理', '系统参数配置成功', '2017-12-12 16:50:38');
+INSERT INTO `system_log` VALUES ('54', '0.0.0.0', 'admin/login/index', 'test', '系统管理', '用户登录系统成功', '2017-12-13 09:53:36');
 
 -- ----------------------------
 -- Table structure for system_menu
@@ -307,7 +325,7 @@ CREATE TABLE `system_menu` (
   `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `index_system_menu_node` (`node`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8 COMMENT='系统菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='系统菜单表';
 
 -- ----------------------------
 -- Records of system_menu
@@ -348,6 +366,7 @@ INSERT INTO `system_menu` VALUES ('95', '0', 'CSG', '', '', '#', '', '_self', '0
 INSERT INTO `system_menu` VALUES ('96', '95', '文章管理', '', 'fa fa-stop-circle', '#', '', '_self', '0', '1', '0', '2017-11-28 13:38:18');
 INSERT INTO `system_menu` VALUES ('97', '96', '文章列表', '', 'fa fa-newspaper-o', 'csg/article/index', '', '_self', '0', '1', '0', '2017-11-30 11:23:53');
 INSERT INTO `system_menu` VALUES ('98', '96', '测试', '', 'fa fa-bullseye', 'csg/article/test', '', '_self', '0', '1', '0', '2017-12-06 14:57:00');
+INSERT INTO `system_menu` VALUES ('99', '96', '表格', '', 'fa fa-file-excel-o', '/csg/article/excel', '', '_self', '0', '1', '0', '2017-12-12 16:21:43');
 
 -- ----------------------------
 -- Table structure for system_node
@@ -494,8 +513,8 @@ CREATE TABLE `system_user` (
 -- ----------------------------
 -- Records of system_user
 -- ----------------------------
-INSERT INTO `system_user` VALUES ('10000', 'admin', '21232f297a57a5a743894a0e4a801fc3', '22222222', 'sdfsd@Qq.com1', '13888888855', 'dfgsdfgsfd', '27060', '2017-12-08 11:00:19', '1', '301,302,303,304', '0', null, '2015-11-13 15:14:22');
-INSERT INTO `system_user` VALUES ('10001', 'test', 'e10adc3949ba59abbe56e057f20f883e', null, '', '', '', '2', '2017-12-08 11:28:53', '1', '1', '0', null, '2017-12-08 10:58:59');
+INSERT INTO `system_user` VALUES ('10000', 'admin', '21232f297a57a5a743894a0e4a801fc3', '22222222', 'sdfsd@Qq.com1', '13888888855', 'dfgsdfgsfd', '27061', '2017-12-11 09:19:44', '1', '301,302,303,304', '0', null, '2015-11-13 15:14:22');
+INSERT INTO `system_user` VALUES ('10001', 'test', 'e10adc3949ba59abbe56e057f20f883e', null, '', '', '', '8', '2017-12-13 09:53:36', '1', '1', '0', null, '2017-12-08 10:58:59');
 
 -- ----------------------------
 -- Table structure for wechat_fans

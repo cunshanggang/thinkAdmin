@@ -149,6 +149,19 @@ class Article extends BasicAdmin {
 
     //表格
     public function excel() {
+        if($_FILES) {
+            echo "<pre>";
+            print_r($_FILES);
+            echo "</pre>";
+        }
+
         return $this->fetch();
+    }
+
+    //导入表格
+    public function import() {
+        echo "<pre>";
+        print_r($_FILES);
+        echo "</pre>";
     }
 }

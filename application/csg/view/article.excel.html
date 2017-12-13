@@ -1,54 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>导入表格</title>
     <link rel="stylesheet" href="__STATIC__/plugs/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__STATIC__/plugs/jquery/ajaxfileupload.js">
 </head>
 <body>
 <!-- 导入excel 开始 -->
-<form class="layui-form layui-form-pane form-search" action="__SELF__" onsubmit="return false" method="get">
-    <div style="position:relative;">
-        <div class="input-group">
-            <input type="file" class="form-control" name="excel">
-
-        </div>
-    </div>
-
-    <div class="layui-form-item layui-inline">
-        <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe62d;</i> 导 入</button>
-    </div>
-</form>
 <!-- 导入excel 结束 -->
 <!--有样式导入 start-->
-    <input name="file" lay-type="file" class="layui-upload-file" id="test1" type="file">
-
 <!--有样式导入 end-->
-<div class="layui-upload">
-    <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
-    <button type="button" class="layui-btn" id="test9">开始上传</button>
-</div>
+<form class="layui-form layui-box" style='padding:25px 30px 20px 0' action="__SELF__" enctype="multipart/form-data" method="post">
+
+<input type="file" class="layui-btn" name="excelImport">
+    <br>
+    <input type="submit" class="layui-btn default" value="提交">
+</form>
+
+<input type ="file" id="ImportPicInput" name= "myfile" style=" display: none" />
+<div class ="input-append">
+    <label for ="importPicName"> 上传原始图片：</label >
+    <input type ="text" class="layui-btn" id="importPicName" />
+    <a class ="layui-btn" onclick= "$('#ImportPicInput').click();" >打开</a>
+</div >
+选择文件:<input type="file" id="file1" /><br />
+<input type="button" id="upload" value="上传" />
+<!--<img src="wait.gif" style="display:none" id="imgWait"/>-->
+<i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop" style="font-size: 30px; color: #1E9FFF;display:none;" id="imgWait" >&#xe63d;</i>
 </body>
-<script type="text/javascript" src="__STATIC__/plugs/layui/layui.js"></script>
 <script type="text/javascript">
-    window.onload = function() {
-        alert('dddd');
-        layui.use('upload', function() {
-            var $ = layui.jquery, upload = layui.upload;
-            //选完文件后不自动上传
-            upload.render({
-                elem: '#test8'
-                ,url: '/upload/'
-                ,accept: 'file'
-                ,ext:'xlsx'
-                ,auto: false
-                //,multiple: true
-                ,bindAction: '#test9'
-                ,done: function(res){
-                    console.log(res)
+    $(function () {
+        $("#upload").click(function () {
+//            alert('dddd');
+            $("#imgWait").css('display','inner-block');
+            var formData = new FormData();
+            formData.append("myfile", document.getElementById("file1").files[0]);
+            $.ajax({
+                url: "{:url('article/import')}",
+                type: "POST",
+                data: formData,
+                /**
+                 *必须false才会自动加上正确的Content-Type
+                 */
+                contentType: false,
+                /**
+                 * 必须false才会避开jQuery对 formdata 的默认处理
+                 * XMLHttpRequest会对 formdata 进行正确的处理
+                 */
+                processData: false,
+                success: function (data) {
+                    if (data.status == "true") {
+                        alert("上传成功！");
+                    }
+                    if (data.status == "error") {
+                        alert(data.msg);
+                    }
+                    $("#imgWait").hide();
+                },
+                error: function () {
+                    alert("上传失败！");
+                    $("#imgWait").hide();
                 }
             });
         });
-    }
+    });
 </script>
 </html>
