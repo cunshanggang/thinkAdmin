@@ -13,6 +13,8 @@ use think\Db;
 use think\View;
 use think\Request;
 use app\csg\model\Article as Art;
+use PHPExcel_IOFactory;
+use PHPExcel;
 
 class Article extends BasicAdmin {
 
@@ -147,21 +149,29 @@ class Article extends BasicAdmin {
 //        echo $obj.data.msg;
     }
 
-    //表格
-    public function excel() {
-        if($_FILES) {
-            echo "<pre>";
-            print_r($_FILES);
-            echo "</pre>";
-        }
-
-        return $this->fetch();
-    }
-
     //导入表格
     public function import() {
-        echo "<pre>";
-        print_r($_FILES);
-        echo "</pre>";
+//        echo "<pre>";
+//        print_r($_FILES);
+//        echo "</pre>";
+        //集体引入类库
+        vendor("phpexcel.Classes.PHPExcel.PHPExcel");
+        //5后面如果没有.的话也会报错
+        vendor("phpexcel.Classes.PHPExcel.Writer.Excel5.");
+        //7后面如果没有.的话也会报错
+        vendor("phpexcel.Classes.PHPExcel.Writer.Excel2007.");
+        vendor("phpexcel.Classes.PHPExcel.IOFactory");
+        if(request()->isPost()) {
+            $excel = request()->file('myfile')->getInfo();
+            $objPHPExcel = \PHPExcel_IOFactory::load($excel['tmp_name']);//读取上传的文件
+            $arrExcel = $objPHPExcel->getSheet(0)->toArray();//获取其中的数据
+//            echo "<pre>";
+//            print_r($arrExcel);
+//            echo "</pre>";
+//            die;
+//            return json_encode($arrExcel);
+            return json_encode($arrExcel);
+        }
+        return $this->fetch();
     }
 }
