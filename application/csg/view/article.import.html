@@ -64,6 +64,10 @@
                  */
                 processData: false,
                 success: function (res) {
+                    layer.alert('上传成功！', {
+                        icon: 5,
+                        title: "提示"
+                    });
                     var data = eval("("+res+")");
 //                    alert(data[0][1]);
                     var html = '<colgroup><col width="150"><col width="200"><col></colgroup><thead><tr>';
@@ -95,7 +99,11 @@
                     $("#imgWait").hide();
                 },
                 error: function () {
-                    alert("上传失败！");
+//                    alert("上传失败！");
+                    layer.alert('上传失败！', {
+                        icon: 5,
+                        title: "提示"
+                    });
                     $("#imgWait").hide();
                 }
             });

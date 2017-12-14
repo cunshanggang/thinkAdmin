@@ -18,6 +18,18 @@ use PHPExcel;
 
 class Article extends BasicAdmin {
 
+    public function __construct() {
+        parent::__construct();
+        //集体引入类库
+        vendor("phpexcel.Classes.PHPExcel.PHPExcel");
+        //5后面如果没有.的话也会报错
+        vendor("phpexcel.Classes.PHPExcel.Writer.Excel5.");
+        //7后面如果没有.的话也会报错
+        vendor("phpexcel.Classes.PHPExcel.Writer.Excel2007.");
+        vendor("phpexcel.Classes.PHPExcel.IOFactory");
+
+    }
+
     /**
      * 指定当前数据表
      * @var string
@@ -154,13 +166,6 @@ class Article extends BasicAdmin {
 //        echo "<pre>";
 //        print_r($_FILES);
 //        echo "</pre>";
-        //集体引入类库
-        vendor("phpexcel.Classes.PHPExcel.PHPExcel");
-        //5后面如果没有.的话也会报错
-        vendor("phpexcel.Classes.PHPExcel.Writer.Excel5.");
-        //7后面如果没有.的话也会报错
-        vendor("phpexcel.Classes.PHPExcel.Writer.Excel2007.");
-        vendor("phpexcel.Classes.PHPExcel.IOFactory");
         if(request()->isPost()) {
             $excel = request()->file('myfile')->getInfo();
             $objPHPExcel = \PHPExcel_IOFactory::load($excel['tmp_name']);//读取上传的文件
@@ -169,8 +174,62 @@ class Article extends BasicAdmin {
 //            print_r($arrExcel);
 //            echo "</pre>";
 //            die;
-//            return json_encode($arrExcel);
             return json_encode($arrExcel);
+        }
+        return $this->fetch();
+    }
+
+    //导出表格
+    public function export() {
+//        echo "123";
+        if(request()->isPost()) {
+            $field = Db::query("SELECT COLUMN_NAME,column_comment FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'csg_article' AND table_schema = 'thinkadmin'");
+//            echo "<pre>";
+//            print_r($field);
+//            echo "</pre>";
+            $order = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+//            echo count($order);
+            $str = '';
+            for($i=0;$i<count($field);$i++) {
+                $str.="setCellValue('{$order[$i]}1','{$field[$i]['column_comment']}')"."->";
+            }
+//            echo $str;
+//            exit;
+            $str = substr($str,0,-2);
+            $str = $str.';';
+            echo $str;
+            $data = Db::table('csg_article')->select();
+            $objPHPExcel = new \PHPExcel();
+            $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);
+            $objPHPExcel->setActiveSheetIndex(0)->$str;
+//            $objPHPExcel->setActiveSheetIndex(0)
+//                ->setCellValue('A1','序号')
+//                ->setCellValue('B1','标题')
+//                ->setCellValue('C1','作者')
+//                ->setCellValue('D1','图片路径')
+//                ->setCellValue('E1','内容')
+//                ->setCellValue('F1','时间')
+//                ->setCellValue('G1','状态');
+
+            //        $i=2;  //定义一个i变量，目的是在循环输出数据是控制行数
+            $count = count($data);  //计算有多少条数据
+            for ($i = 2; $i <= $count+1; $i++) {
+                $objPHPExcel->getActiveSheet()->setCellValue($field[$i-2] . $i, $data[$i - 2][$field[$i-2]['COLUMN_NAME']]);
+                $objPHPExcel->getActiveSheet()->setCellValue($field[$i-2] . $i, $data[$i - 2][$field[$i-2]['COLUMN_NAME']]);
+                $objPHPExcel->getActiveSheet()->setCellValue($field[$i-2] . $i, $data[$i - 2][$field[$i-2]['COLUMN_NAME']]);
+                $objPHPExcel->getActiveSheet()->setCellValue($field[$i-2] . $i, $data[$i - 2][$field[$i-2]['COLUMN_NAME']]);
+                $objPHPExcel->getActiveSheet()->setCellValue($field[$i-2] . $i, $data[$i - 2][$field[$i-2]['COLUMN_NAME']]);
+                $objPHPExcel->getActiveSheet()->setCellValue($field[$i-2] . $i, $data[$i - 2][$field[$i-2]['COLUMN_NAME']]);
+                $objPHPExcel->getActiveSheet()->setCellValue($field[$i-2] . $i, $data[$i - 2][$field[$i-2]['COLUMN_NAME']]);
+            }
+
+            $objPHPExcel->getActiveSheet()->setTitle('artitlce');      //设置sheet的名称
+            $objPHPExcel->setActiveSheetIndex(0);                   //设置sheet的起始位置
+            $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');   //通过PHPExcel_IOFactory的写函数将上面数据写出来
+            $PHPWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,"Excel2007");
+            header('Content-Disposition: attachment;filename="article.xlsx"');
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            $PHPWriter->save("php://output"); //表示在$path路径下面生成demo.xlsx文件
         }
         return $this->fetch();
     }
