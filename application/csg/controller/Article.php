@@ -183,29 +183,34 @@ class Article extends BasicAdmin {
     public function export() {
 //        echo "123";
         if(request()->isPost()) {
-            $field = Db::query("SELECT COLUMN_NAME,column_comment FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'csg_article' AND table_schema = 'thinkadmin'");
+//            echo "<pre>";
+//            print_r($_REQUEST);
+//            echo "</pre>";exit;
+            $table = $_POST['tableName'];
+            $field = Db::query("SELECT COLUMN_NAME,column_comment FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$table}' AND table_schema = 'thinkadmin'");
 //            echo "<pre>";
 //            print_r($field);
 //            echo "</pre>";exit;
-            $order = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+            if($field) {
+                $order = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
 //            echo count($order);
-            $str = '';
-            for($i=0;$i<count($field);$i++) {
-                $str.="setCellValue('{$order[$i]}1','{$field[$i]['column_comment']}')"."->";
-            }
+                $str = '';
+                for($i=0;$i<count($field);$i++) {
+                    $str.="setCellValue('{$order[$i]}1','{$field[$i]['column_comment']}')"."->";
+                }
 //            echo $str;
 //            exit;
-            $str = substr($str,0,-2);
-            $str = $str.';';
+                $str = substr($str,0,-2);
+                $str = $str.';';
 //            echo $str;
-            $data = Db::table('csg_article')->select();
-            $objPHPExcel = new \PHPExcel();
-            $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);
+                $data = Db::table($table)->select();
+                $objPHPExcel = new \PHPExcel();
+                $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);
 //            $objPHPExcel->setActiveSheetIndex(0)->$str;
-            $headObj = $objPHPExcel->setActiveSheetIndex(0);
-            foreach($field as $k=>$v) {
-                $headObj->setCellValue("$order[$k]1",$v['column_comment']);
-            }
+                $headObj = $objPHPExcel->setActiveSheetIndex(0);
+                foreach($field as $k=>$v) {
+                    $headObj->setCellValue("$order[$k]1",$v['column_comment']);
+                }
 //            $headObj->setCellValue('A1','序号');
 //            $headObj->setCellValue('B1','标题');
 //            $headObj->setCellValue('C1','作者');
@@ -222,13 +227,13 @@ class Article extends BasicAdmin {
 //                ->setCellValue('F1','时间')
 //                ->setCellValue('G1','状态');
 
-            //        $i=2;  //定义一个i变量，目的是在循环输出数据是控制行数
-            $count = count($data);  //计算有多少条数据
+                //        $i=2;  //定义一个i变量，目的是在循环输出数据是控制行数
+                $count = count($data);  //计算有多少条数据
 
-            for ($i = 2; $i <= $count+1; $i++) {
-                foreach($field as $k=>$v) {
-                    $objPHPExcel->getActiveSheet()->setCellValue($order[$k] . $i, $data[$i - 2][$v['COLUMN_NAME']]);
-                }
+                for ($i = 2; $i <= $count+1; $i++) {
+                    foreach($field as $k=>$v) {
+                        $objPHPExcel->getActiveSheet()->setCellValue($order[$k] . $i, $data[$i - 2][$v['COLUMN_NAME']]);
+                    }
 
 //                $objPHPExcel->getActiveSheet()->setCellValue('A' . $i, $data[$i - 2]['id']);
 //                $objPHPExcel->getActiveSheet()->setCellValue('B' . $i, $data[$i - 2]['title']);
@@ -237,16 +242,20 @@ class Article extends BasicAdmin {
 //                $objPHPExcel->getActiveSheet()->setCellValue('E' . $i, $data[$i - 2]['content']);
 //                $objPHPExcel->getActiveSheet()->setCellValue('F' . $i, $data[$i - 2]['time']);
 //                $objPHPExcel->getActiveSheet()->setCellValue('G' . $i, $data[$i - 2]['status']);
+                }
+
+
+                $objPHPExcel->getActiveSheet()->setTitle($table);      //设置sheet的名称
+                $objPHPExcel->setActiveSheetIndex(0);                   //设置sheet的起始位置
+                $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');   //通过PHPExcel_IOFactory的写函数将上面数据写出来
+                $PHPWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,"Excel2007");
+                header('Content-Disposition: attachment;filename="result.xlsx"');
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                $PHPWriter->save("php://output"); //表示在$path路径下面生成demo.xlsx文件
+            } else {
+                $this->error("请正确输入!");
             }
 
-
-            $objPHPExcel->getActiveSheet()->setTitle('article');      //设置sheet的名称
-            $objPHPExcel->setActiveSheetIndex(0);                   //设置sheet的起始位置
-            $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');   //通过PHPExcel_IOFactory的写函数将上面数据写出来
-            $PHPWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,"Excel2007");
-            header('Content-Disposition: attachment;filename="article.xlsx"');
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            $PHPWriter->save("php://output"); //表示在$path路径下面生成demo.xlsx文件
         }
         return $this->fetch();
     }
