@@ -30,7 +30,7 @@
                 <img data-tips-image style="height:auto;max-height:32px;min-width:32px" src='{$vo.pic_url|default=""}'/>
                 <input type="hidden" name="pic_url" onchange="$(this).prev('img').attr('src', this.value)"
                        value='{$vo.pic_url|default=""}' class="layui-input">
-                <input type="hidden" name="pic_url">
+                <input type="hidden" name="pic_url" value="{$vo.pic_url}">
                 <a data-file="mut" data-field="pic_url" data-type="png,jpg" data-uptype="local" href="javascript:void(0)">上传图片</a>
             </div>
             {else}
