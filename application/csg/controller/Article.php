@@ -259,4 +259,8 @@ class Article extends BasicAdmin {
         }
         return $this->fetch();
     }
+    //弹出框的实现
+    public function box() {
+        return $this->fetch();
+    }
 }

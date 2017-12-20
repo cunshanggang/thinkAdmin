@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>弹出框</title>
+</head>
+<body>
+    <button class="layui-btn layui-btn-normal" id="box_1">弹出框1</button>
+    <script type="text/javascript">
+        $('#box_1').on('click', function(){
+            layer.open({
+                type: 1,
+                area: ['600px', '360px'],
+                shadeClose: true, //点击遮罩关闭
+                title: "yaoMing",
+                content: '\<\div style="padding:20px;"><form class="layui-form" action=""><div class="layui-form-item"> <label class="layui-form-label">单行输入框</label> <div class="layui-input-block"> <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input"> </div> </div> <div class="layui-form-item"> <label class="layui-form-label">验证必填项</label> <div class="layui-input-block"> <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input"> </div> </div><button class="layui-btn layui-btn-normal" id="box_2">弹出框2</button>\<\/div>'
+            });
+        });
+
+        $('#box_2').on('click', function(){
+            layer.open({
+                type: 1,
+                area: ['600px', '360px'],
+                shadeClose: true, //点击遮罩关闭
+                content: '\<\div style="padding:20px;">自定义内容\<\/div>'
+            });
+        });
+    </script>
+</body>
+</html>
