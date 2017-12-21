@@ -263,4 +263,11 @@ class Article extends BasicAdmin {
     public function box() {
         return $this->fetch();
     }
+
+    //box提交数据
+    public function boxData() {
+        echo "<pre>";
+        print_r($_REQUEST);
+        echo "</pre>";
+    }
 }
