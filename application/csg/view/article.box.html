@@ -5,27 +5,44 @@
     <title>弹出框</title>
 </head>
 <body>
-    <button class="layui-btn layui-btn-normal" id="box_1">弹出框1</button>
-    <button data-method="setTop" class="layui-btn">多窗口模式，层叠置顶</button>
+    <div class="windows" style="text-align:center">
+        <button class="layui-btn layui-btn-primary" id="add">open a new windows</button>
+    </div>
+    <div class="windows1" style="text-align:center;">
+        <p>学知识从基础开始</p>
+        <button class="layui-btn layui-btn-primary" id="add1">open a new windows</button>
+    </div>
+    <div class="windows2" style="text-align:center;display:none;">
+        <p>如果你还想弹窗则调用layer 的open type=1,然后弹出对应的内容即可。</p>
+    </div>
     <script type="text/javascript">
-        $('#box_1').on('click', function(){
-            layer.open({
-                type: 1,
-                area: ['600px', '360px'],
-                shadeClose: true, //点击遮罩关闭
-                title: "yaoMing",
-                content: '\<\div style="padding:20px;"><form class="layui-form" method="POST" action="{:url("article/boxData")}"><div class="layui-form-item"> <label class="layui-form-label">单行输入框</label> <div class="layui-input-block"> <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input"> </div> </div> <div class="layui-form-item"> <label class="layui-form-label">验证必填项</label> <div class="layui-input-block"> <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input"> </div> </div><button class="layui-btn layui-btn-normal" id="box_2">弹出框2</button>\<\/div>'
+        layer.ready(function(){
+
+            $("#add").bind("click", function() {
+                var oBox = $('.windows1');
+                layer.open({
+                    type: 0,
+                    title: '欢迎页',
+                    maxmin: true,
+                    area: ['400px', '250px'],
+                    content: oBox,
+                });
             });
+
+            $("#add1").bind("click", function() {
+                layer.open({
+                    type: 1,
+                    title: '欢迎页',
+                    maxmin: true,
+                    area: ['250px', '150px'],
+                    content: $('.windows2'),
+                });
+            })
         });
 
-        $('#box_2').on('click', function(){
-//            alert('dddd');
-            layer.open({
-                type: 1,
-                area: ['600px', '360px'],
-                shadeClose: true, //点击遮罩关闭
-                content: '\<\div style="padding:20px;">自定义内容\<\/div>'
-            });
+        //关于
+        $('#about').on('click', function(){
+            layer.alert(layer.v + ' - 贤心出品 sentsin.com');
         });
 //        layui.use('layer', function() { //独立版的layer无需执行这一句
 //            var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
