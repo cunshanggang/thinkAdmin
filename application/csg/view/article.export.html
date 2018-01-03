@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>导出表格</title>
+</head>
+<body>
+<hr class="layui-bg-blue">
+<form class="layui-form" action="__SELF__" method="post">
+    <div class="layui-form-item">
+        <label class="layui-form-label">表名</label>
+        <div class="layui-input-block">
+            <input type="text" name="tableName" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" style="width:250px">
+            <div class="layui-form-mid layui-word-aux">请输入要导出的表的名字</div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <!--<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>-->
+            <input type="submit" class="layui-btn" value="提交"/>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<hr class="layui-bg-blue">
+<button type="button" class="layui-btn" lay-data="__SELF__">导出数据</button>
+<a href="__SELF__" class="layui-btn">导出数据</a>
+<form action="__SELF__" method="POST" enctype="multipart/form-data">
+    <input type="text" name="tableName">
+    <input type="submit" value="导出数据">
+</form>
+</body>
+<script type="text/javascript">
+    //Demo
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+//            alert('ddddddd');
+//            console.log(data.field);
+//            layer.msg(JSON.stringify(data.field));
+            var datas = data.field;
+            var action = data.form.action;
+            $.ajax({
+                url:action,
+                data:datas,
+                type:"POST",
+                dataType:"json",
+                success:function(msg) {
+
+                },
+                error:function(error) {
+                    //alert(error);
+                }
+            });
+            return false;
+        });
+</script>
+</html>

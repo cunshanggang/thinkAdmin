@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>导入表格</title>
+    <link rel="stylesheet" href="__STATIC__/plugs/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__STATIC__/plugs/jquery/ajaxfileupload.js">
+</head>
+<body>
+<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe62d;导入表格</i>
+<!-- 导入excel 开始 -->
+<input type="file" id="file1" class="layui-btn layui-btn-normal"/><br />
+<!--<i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop" id="imgWait" >&#xe63d;</i>-->
+<input type="button" class="layui-btn layui-btn-normal" id="upload11" value="上传" />
+<!--<img src="__STATIC__/theme/default/img/loading.gif" style="display:none" id="imgWait"/>-->
+
+<!--<img src="wait.gif" style="display:none" id="imgWait"/>-->
+<!-- 导入excel 结束 -->
+<table class="layui-table" id="myTab">
+
+    <thead>
+    <tr>
+        <th>昵称</th>
+        <th>加入时间</th>
+        <th>签名</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>贤心</td>
+        <td>2016-11-29</td>
+        <td>人生就像是一场修行</td>
+    </tr>
+    <tr>
+        <td>许闲心</td>
+        <td>2016-11-28</td>
+        <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<script type="text/javascript">
+    $(function () {
+        $("#imgWait").hide();
+        $("#upload11").click(function () {
+//            alert('dddd');
+//            $("#imgWait").css('display','block');
+            $("#imgWait").show();
+//            setInterval(function(){alert("ddddd")},5000);
+//            setTimeout(function(){},5000);
+            var formData = new FormData();
+            formData.append("myfile", document.getElementById("file1").files[0]);
+            $.ajax({
+                url: "__SELF__",
+                type: "POST",
+                data: formData,
+                /**
+                 *必须false才会自动加上正确的Content-Type
+                 */
+                contentType: false,
+                /**
+                 * 必须false才会避开jQuery对 formdata 的默认处理
+                 * XMLHttpRequest会对 formdata 进行正确的处理
+                 */
+                processData: false,
+                success: function (res) {
+                    layer.alert('上传成功！', {
+                        icon: 5,
+                        title: "提示"
+                    });
+                    var data = eval("("+res+")");
+//                    alert(data[0][1]);
+                    var html = '<colgroup><col width="150"><col width="200"><col></colgroup><thead><tr>';
+                    for(var i in data[0]) {
+                        html+="<th>"+data[0][i]+"</th>";
+                    }
+                    html+='</tr></thead><tbody>';
+                    delete data[0];
+//                    console.log(data[0]);
+//                    alert(data[0][0]);
+
+                    for(var i in data) {
+                        html+="<tr>";
+                        for(var j in data[i]) {
+                            html+="<td>"+data[i][j]+"</td>";
+                        }
+                        html+="</tr>";
+                    }
+
+                    html+="</tbody>";
+                    $("#myTab").html(html);
+//                    alert(data);
+//                    if (data.status == "true") {
+//                        alert("上传成功！");
+//                    }
+                    if (data.status == "error") {
+                        alert(data.msg);
+                    }
+                    $("#imgWait").hide();
+                },
+                error: function () {
+//                    alert("上传失败！");
+                    layer.alert('上传失败！', {
+                        icon: 5,
+                        title: "提示"
+                    });
+                    $("#imgWait").hide();
+                }
+            });
+        });
+    });
+</script>
+</html>
