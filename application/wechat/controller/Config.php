@@ -1,133 +1,106 @@
 <?php
 
 // +----------------------------------------------------------------------
-// | Think.Admin
+// | ThinkAdmin
 // +----------------------------------------------------------------------
-// | 版权所有 2014~2017 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
+// | 版权所有 2014~2019 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
 // +----------------------------------------------------------------------
-// | 官方网站: http://think.ctolog.com
+// | 官方网站: http://demo.thinkadmin.top
 // +----------------------------------------------------------------------
 // | 开源协议 ( https://mit-license.org )
 // +----------------------------------------------------------------------
-// | github开源项目：https://github.com/zoujingli/Think.Admin
+// | gitee 代码仓库：https://gitee.com/zoujingli/ThinkAdmin
+// | github 代码仓库：https://github.com/zoujingli/ThinkAdmin
 // +----------------------------------------------------------------------
 
 namespace app\wechat\controller;
 
-use controller\BasicAdmin;
-use service\DataService;
-use service\LogService;
-use service\PayService;
+use app\wechat\service\WechatService;
+use library\Controller;
+use library\File;
 
 /**
- * 微信配置管理
+ * 微信授权绑定
  * Class Config
  * @package app\wechat\controller
- * @author Anyon <zoujingli@qq.com>
- * @date 2017/03/27 14:43
  */
-class Config extends BasicAdmin
+class Config extends Controller
 {
-
     /**
-     * 定义当前操作表名
-     * @var string
+     * 微信授权绑定
+     * @auth true
+     * @menu true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
-    public $table = 'SystemConfig';
-
-    /**
-     * 微信基础参数配置
-     * @return \think\response\View
-     */
-    public function index()
+    public function options()
     {
+        $this->applyCsrfToken();
+        $this->thrNotify = url('@wechat/api.push', '', false, true);
         if ($this->request->isGet()) {
-            return view('', ['title' => '微信接口配置']);
+            $this->title = '微信授权绑定';
+            if (!($this->geoip = cache('mygeoip'))) {
+                cache('mygeoip', $this->geoip = gethostbyname($this->request->host()), 360);
+            }
+            $code = encode(url('@admin', '', true, true) . '#' . $this->request->url());
+            $this->authurl = config('wechat.service_url') . "/service/api.push/auth/{$code}";
+            if (input('?appid') && input('?appkey')) {
+                sysconf('wechat_type', 'thr');
+                sysconf('wechat_thr_appid', input('appid'));
+                sysconf('wechat_thr_appkey', input('appkey'));
+                WechatService::wechat()->setApiNotifyUri($this->thrNotify);
+            }
+            try {
+                $this->wechat = WechatService::wechat()->getConfig();
+            } catch (\Exception $e) {
+                $this->wechat = [];
+            }
+            $this->fetch();
+        } else {
+            foreach ($this->request->post() as $k => $v) sysconf($k, $v);
+            if ($this->request->post('wechat_type') === 'thr') {
+                WechatService::wechat()->setApiNotifyUri($this->thrNotify);
+            }
+            sysoplog('微信管理', '修改微信授权配置成功');
+            $uri = url('wechat/config/options');
+            $this->success('微信参数修改成功！', url('@admin') . "#{$uri}");
         }
-        foreach ($this->request->post() as $key => $vo) {
-            sysconf($key, $vo);
-        }
-        LogService::write('微信管理', '修改微信接口参数成功');
-        $this->success('数据修改成功！', '');
     }
 
     /**
-     * 微信商户参数配置
-     * @return \think\response\View
+     * 微信支付配置
+     * @auth true
+     * @menu true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
-    public function pay()
+    public function payment()
     {
+        $this->applyCsrfToken();
         if ($this->request->isGet()) {
-            $method = strtolower('_pay_' . $this->request->get('action'));
-            if (method_exists($this, $method)) {
-                return $this->$method();
+            $this->title = '微信支付配置';
+            $file = File::instance('local');
+            $this->wechat_mch_ssl_cer = sysconf('wechat_mch_ssl_cer');
+            $this->wechat_mch_ssl_key = sysconf('wechat_mch_ssl_key');
+            $this->wechat_mch_ssl_p12 = sysconf('wechat_mch_ssl_p12');
+            if (!$file->has($this->wechat_mch_ssl_cer, true)) $this->wechat_mch_ssl_cer = '';
+            if (!$file->has($this->wechat_mch_ssl_key, true)) $this->wechat_mch_ssl_key = '';
+            if (!$file->has($this->wechat_mch_ssl_p12, true)) $this->wechat_mch_ssl_p12 = '';
+            $this->fetch();
+        } else {
+            if ($this->request->post('wechat_mch_ssl_type') === 'p12') {
+                if (!($sslp12 = $this->request->post('wechat_mch_ssl_p12'))) {
+                    $mchid = $this->request->post('wechat_mch_id');
+                    $content = File::instance('local')->get($sslp12, true);
+                    if (!openssl_pkcs12_read($content, $certs, $mchid)) {
+                        $this->error('商户MCH_ID与支付P12证书不匹配！');
+                    }
+                }
             }
-            return view('', ['title' => '微信支付配置']);
+            foreach ($this->request->post() as $k => $v) sysconf($k, $v);
+            sysoplog('微信管理', '修改微信支付配置成功');
+            $this->success('微信支付配置成功！');
         }
-        $data = $this->request->post();
-        foreach ($data as $key => $vo) {
-            if (in_array($key, ['wechat_cert_key_md5', 'wechat_cert_cert_md5']) && !empty($vo)) {
-                $filename = ROOT_PATH . 'static/upload/' . join('/', str_split($vo, 16)) . '.pem';
-                !file_exists($filename) && $this->error('支付双向证书上传失败，请重新上传！');
-                $data[str_replace('_md5', '', $key)] = $filename;
-            }
-        }
-        unset($data['wechat_cert_key_md5'], $data['wechat_cert_cert_md5']);
-        foreach ($data as $key => $vo) {
-            sysconf($key, $vo);
-        }
-        LogService::write('微信管理', '修改微信支付参数成功');
-        $this->success('数据修改成功！', '');
-    }
-
-    /**
-     * 生成测试支付二维码
-     * @return \think\response\Json
-     */
-    protected function _pay_payqrc()
-    {
-        $pay = &load_wechat('pay');
-        // 生成订单号
-        $order_no = session('pay-test-order-no');
-        if (empty($order_no)) {
-            $order_no = DataService::createSequence(10, 'wechat-pay-test');
-            session('pay-test-order-no', $order_no);
-        }
-        // 该订单号已经支付
-        if (PayService::isPay($order_no)) {
-            return json(['code' => 2, 'order_no' => $order_no]);
-        }
-        // 订单号未支付，生成支付二维码URL
-        $url = PayService::createWechatPayQrc($pay, $order_no, 1, '微信扫码支付测试!');
-        if ($url !== false) {
-            return json(['code' => 1, 'url' => $url, 'order_no' => $order_no]);
-        }
-        // 生成支付二维码URL失败
-        $this->error("生成支付二维码失败, {$pay->errMsg}[{$pay->errCode}]");
-    }
-
-    /**
-     * 支付测试退款
-     */
-    protected function _pay_refund()
-    {
-        $order_no = session('pay-test-order-no');
-        if (empty($order_no)) {
-            $this->error('测试订单号不存在, 请重新开始支付测试!');
-        }
-        if (!PayService::isPay($order_no)) {
-            $this->error('测试订单未支付或未收到微信支付通过!');
-        }
-        $pay = &load_wechat('pay');
-        if (!file_exists($pay->ssl_cer) || !file_exists($pay->ssl_key)) {
-            $this->error('微信支付双向证书异常, 无法完成退款操作!');
-        }
-        $refund_no = DataService::createSequence(10, 'wechat-pay-test');
-        if (false !== PayService::putWechatRefund($pay, $order_no, 1, $refund_no)) {
-            session('pay-test-order-no', null);
-            $this->success('测试退款操作成功, 请查看微信通知!', '');
-        }
-        $this->error("操作退款失败, {$pay->errMsg}[{$pay->errCode}]");
     }
 
 }

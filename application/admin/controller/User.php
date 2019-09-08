@@ -1,31 +1,31 @@
 <?php
 
 // +----------------------------------------------------------------------
-// | Think.Admin
+// | ThinkAdmin
 // +----------------------------------------------------------------------
-// | 版权所有 2014~2017 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
+// | 版权所有 2014~2019 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
 // +----------------------------------------------------------------------
-// | 官方网站: http://think.ctolog.com
+// | 官方网站: http://demo.thinkadmin.top
 // +----------------------------------------------------------------------
 // | 开源协议 ( https://mit-license.org )
 // +----------------------------------------------------------------------
-// | github开源项目：https://github.com/zoujingli/Think.Admin
+// | gitee 代码仓库：https://gitee.com/zoujingli/ThinkAdmin
+// | github 代码仓库：https://github.com/zoujingli/ThinkAdmin
 // +----------------------------------------------------------------------
 
 namespace app\admin\controller;
 
-use controller\BasicAdmin;
-use service\DataService;
+use app\admin\service\NodeService;
+use library\Controller;
+use library\tools\Data;
 use think\Db;
 
 /**
- * 系统用户管理控制器
+ * 系统用户管理
  * Class User
  * @package app\admin\controller
- * @author Anyon <zoujingli@qq.com>
- * @date 2017/02/15 18:12
  */
-class User extends BasicAdmin
+class User extends Controller
 {
 
     /**
@@ -35,126 +35,144 @@ class User extends BasicAdmin
     public $table = 'SystemUser';
 
     /**
-     * 用户列表
+     * 系统用户管理
+     * @auth true
+     * @menu true
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function index()
     {
         $this->title = '系统用户管理';
-        $get = $this->request->get();
-        $db = Db::name($this->table)->where(['is_deleted' => '0']);
-        foreach (['username', 'phone', 'mail'] as $key) {
-            (isset($get[$key]) && $get[$key] !== '') && $db->whereLike($key, "%{$get[$key]}%");
-        }
-        if (isset($get['date']) && $get['date'] !== '') {
-            list($start, $end) = explode('-', str_replace(' ', '', $get['date']));
-            $db->whereBetween('login_at', ["{$start} 00:00:00", "{$end} 23:59:59"]);
-        }
-        return parent::_list($db);
+        $query = $this->_query($this->table)->like('username,phone,mail')->equal('status');
+        $query->dateBetween('login_at,create_at')->where(['is_deleted' => '0'])->order('id desc')->page();
     }
 
     /**
-     * 授权管理
-     * @return array|string
-     */
-    public function auth()
-    {
-        return $this->_form($this->table, 'auth');
-    }
-
-    /**
-     * 用户添加
+     * 添加系统用户
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function add()
     {
-        return $this->_form($this->table, 'form');
+        $this->applyCsrfToken();
+        $this->_form($this->table, 'form');
     }
 
     /**
-     * 用户编辑
+     * 编辑系统用户
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function edit()
     {
-        return $this->_form($this->table, 'form');
+        $this->applyCsrfToken();
+        $this->_form($this->table, 'form');
     }
 
     /**
-     * 用户密码修改
+     * 修改用户密码
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function pass()
     {
+        $this->applyCsrfToken();
         if ($this->request->isGet()) {
-            $this->assign('verify', false);
-            return $this->_form($this->table, 'pass');
+            $this->verify = false;
+            $this->_form($this->table, 'pass');
+        } else {
+            $post = $this->request->post();
+            if ($post['password'] !== $post['repassword']) {
+                $this->error('两次输入的密码不一致！');
+            }
+            $result = NodeService::checkpwd($post['password']);
+            if (empty($result['code'])) $this->error($result['msg']);
+            if (Data::save($this->table, ['id' => $post['id'], 'password' => md5($post['password'])], 'id')) {
+                $this->success('密码修改成功，下次请使用新密码登录！', '');
+            } else {
+                $this->error('密码修改失败，请稍候再试！');
+            }
         }
-        $post = $this->request->post();
-        if ($post['password'] !== $post['repassword']) {
-            $this->error('两次输入的密码不一致！');
-        }
-        $data = ['id' => $post['id'], 'password' => md5($post['password'])];
-        if (DataService::save($this->table, $data, 'id')) {
-            $this->success('密码修改成功，下次请使用新密码登录！', '');
-        }
-        $this->error('密码修改失败，请稍候再试！');
     }
 
     /**
-     * 表单数据默认处理
+     * 表单数据处理
      * @param array $data
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function _form_filter(&$data)
     {
         if ($this->request->isPost()) {
-            if (isset($data['authorize']) && is_array($data['authorize'])) {
-                $data['authorize'] = join(',', $data['authorize']);
-            }
-            if (isset($data['id'])) {
-                unset($data['username']);
-            } elseif (Db::name($this->table)->where(['username' => $data['username']])->count() > 0) {
-                $this->error('用户账号已经存在，请使用其它账号！');
+            // 刷新系统授权
+            NodeService::applyUserAuth();
+            // 用户权限处理
+            $data['authorize'] = (isset($data['authorize']) && is_array($data['authorize'])) ? join(',', $data['authorize']) : '';
+            // 用户账号重复检查
+            if (isset($data['id'])) unset($data['username']);
+            elseif (Db::name($this->table)->where(['username' => $data['username'], 'is_deleted' => '0'])->count() > 0) {
+                $this->error("账号{$data['username']}已经存在，请使用其它账号！");
             }
         } else {
             $data['authorize'] = explode(',', isset($data['authorize']) ? $data['authorize'] : '');
-            $this->assign('authorizes', Db::name('SystemAuth')->where(['status' => '1'])->select());
+            $this->authorizes = Db::name('SystemAuth')->where(['status' => '1'])->order('sort desc,id desc')->select();
         }
     }
 
     /**
-     * 删除用户
-     */
-    public function del()
-    {
-        if (in_array('10000', explode(',', $this->request->post('id')))) {
-            $this->error('系统超级账号禁止删除！');
-        }
-        if (DataService::update($this->table)) {
-            $this->success("用户删除成功！", '');
-        }
-        $this->error("用户删除失败，请稍候再试！");
-    }
-
-    /**
-     * 用户禁用
+     * 禁用系统用户
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function forbid()
     {
         if (in_array('10000', explode(',', $this->request->post('id')))) {
             $this->error('系统超级账号禁止操作！');
         }
-        if (DataService::update($this->table)) {
-            $this->success("用户禁用成功！", '');
-        }
-        $this->error("用户禁用失败，请稍候再试！");
+        $this->applyCsrfToken();
+        $this->_save($this->table, ['status' => '0']);
     }
 
     /**
-     * 用户禁用
+     * 启用系统用户
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function resume()
     {
-        if (DataService::update($this->table)) {
-            $this->success("用户启用成功！", '');
+        $this->applyCsrfToken();
+        $this->_save($this->table, ['status' => '1']);
+    }
+
+    /**
+     * 删除系统用户
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function remove()
+    {
+        if (in_array('10000', explode(',', $this->request->post('id')))) {
+            $this->error('系统超级账号禁止删除！');
         }
-        $this->error("用户启用失败，请稍候再试！");
+        $this->applyCsrfToken();
+        $this->_delete($this->table);
     }
 
 }

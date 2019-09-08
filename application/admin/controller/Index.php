@@ -1,123 +1,177 @@
 <?php
 
 // +----------------------------------------------------------------------
-// | Think.Admin
+// | ThinkAdmin
 // +----------------------------------------------------------------------
-// | 版权所有 2014~2017 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
+// | 版权所有 2014~2019 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
 // +----------------------------------------------------------------------
-// | 官方网站: http://think.ctolog.com
+// | 官方网站: http://demo.thinkadmin.top
 // +----------------------------------------------------------------------
 // | 开源协议 ( https://mit-license.org )
 // +----------------------------------------------------------------------
-// | github开源项目：https://github.com/zoujingli/Think.Admin
+// | gitee 代码仓库：https://gitee.com/zoujingli/ThinkAdmin
+// | github 代码仓库：https://github.com/zoujingli/ThinkAdmin
 // +----------------------------------------------------------------------
 
 namespace app\admin\controller;
 
-use controller\BasicAdmin;
-use service\DataService;
-use service\NodeService;
-use service\ToolsService;
+use app\admin\service\NodeService;
+use library\Controller;
+use library\tools\Data;
+use think\Console;
 use think\Db;
-use think\View;
+use think\exception\HttpResponseException;
 
 /**
- * 后台入口
+ * 系统公共操作
  * Class Index
  * @package app\admin\controller
- * @author Anyon <zoujingli@qq.com>
- * @date 2017/02/15 10:41
  */
-class Index extends BasicAdmin
+class Index extends Controller
 {
 
     /**
-     * 后台框架布局
-     * @return View
+     * 显示后台首页
+     * @throws \ReflectionException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function index()
     {
-        NodeService::applyAuthNode();
-        $list = (array) Db::name('SystemMenu')->where(['status' => '1'])->order('sort asc,id asc')->select();
-        $menus = $this->_filterMenuData(ToolsService::arr2tree($list), NodeService::get(), !!session('user'));
-        return view('', ['title' => '系统管理', 'menus' => $menus]);
-    }
-
-    /**
-     * 后台主菜单权限过滤
-     * @param array $menus 当前菜单列表
-     * @param array $nodes 系统权限节点数据
-     * @param bool $isLogin 是否已经登录
-     * @return array
-     */
-    private function _filterMenuData($menus, $nodes, $isLogin)
-    {
-        foreach ($menus as $key => &$menu) {
-            !empty($menu['sub']) && $menu['sub'] = $this->_filterMenuData($menu['sub'], $nodes, $isLogin);
-            if (!empty($menu['sub'])) {
-                $menu['url'] = '#';
-            } elseif (preg_match('/^https?\:/i', $menu['url'])) {
-                continue;
-            } elseif ($menu['url'] !== '#') {
-                $node = join('/', array_slice(explode('/', preg_replace('/[\W]/', '/', $menu['url'])), 0, 3));
-                $menu['url'] = url($menu['url']);
-                if (isset($nodes[$node]) && $nodes[$node]['is_login'] && empty($isLogin)) {
-                    unset($menus[$key]);
-                } elseif (isset($nodes[$node]) && $nodes[$node]['is_auth'] && $isLogin && !auth($node)) {
-                    unset($menus[$key]);
-                }
-            } else {
-                unset($menus[$key]);
-            }
+        $this->title = '系统管理后台';
+        NodeService::applyUserAuth(true);
+        $this->menus = NodeService::getMenuNodeTree();
+        if (empty($this->menus) && !NodeService::islogin()) {
+            $this->redirect('@admin/login');
+        } else {
+            $this->fetch();
         }
-        return $menus;
     }
 
     /**
-     * 主机信息显示
-     * @return View
+     * 后台环境信息
      */
     public function main()
     {
-        $_version = Db::query('select version() as ver');
-        return view('', ['mysql_ver' => array_pop($_version)['ver'], 'title' => '后台首页']);
+        $this->think_ver = \think\App::VERSION;
+        $this->mysql_ver = Db::query('select version() as ver')[0]['ver'];
+        $this->fetch();
     }
 
     /**
      * 修改密码
+     * @param integer $id
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
-    public function pass()
+    public function pass($id)
     {
-        if (intval($this->request->request('id')) !== intval(session('user.id'))) {
+        $this->applyCsrfToken();
+        if (intval($id) !== intval(session('admin_user.id'))) {
             $this->error('只能修改当前用户的密码！');
         }
+        if (!NodeService::islogin()) {
+            $this->error('需要登录才能操作哦！');
+        }
         if ($this->request->isGet()) {
-            $this->assign('verify', true);
-            return $this->_form('SystemUser', 'user/pass');
+            $this->verify = true;
+            $this->_form('SystemUser', 'admin@user/pass', 'id', [], ['id' => $id]);
+        } else {
+            $data = $this->_input([
+                'password'    => $this->request->post('password'),
+                'repassword'  => $this->request->post('repassword'),
+                'oldpassword' => $this->request->post('oldpassword'),
+            ], [
+                'oldpassword' => 'require',
+                'password'    => 'require|min:4',
+                'repassword'  => 'require|confirm:password',
+            ], [
+                'oldpassword.require' => '旧密码不能为空！',
+                'password.require'    => '登录密码不能为空！',
+                'password.min'        => '登录密码长度不能少于4位有效字符！',
+                'repassword.require'  => '重复密码不能为空！',
+                'repassword.confirm'  => '重复密码与登录密码不匹配，请重新输入！',
+            ]);
+            $user = Db::name('SystemUser')->where(['id' => $id])->find();
+            if (md5($data['oldpassword']) !== $user['password']) {
+                $this->error('旧密码验证失败，请重新输入！');
+            }
+            $result = NodeService::checkpwd($data['password']);
+            if (empty($result['code'])) $this->error($result['msg']);
+            if (Data::save('SystemUser', ['id' => $user['id'], 'password' => md5($data['password'])])) {
+                $this->success('密码修改成功，下次请使用新密码登录！', '');
+            } else {
+                $this->error('密码修改失败，请稍候再试！');
+            }
         }
-        $data = $this->request->post();
-        if ($data['password'] !== $data['repassword']) {
-            $this->error('两次输入的密码不一致，请重新输入！');
-        }
-        $user = Db::name('SystemUser')->where('id', session('user.id'))->find();
-        if (md5($data['oldpassword']) !== $user['password']) {
-            $this->error('旧密码验证失败，请重新输入！');
-        }
-        if (DataService::save('SystemUser', ['id' => session('user.id'), 'password' => md5($data['password'])])) {
-            $this->success('密码修改成功，下次请使用新密码登录！', '');
-        }
-        $this->error('密码修改失败，请稍候再试！');
     }
 
     /**
-     * 修改资料
+     * 修改用户资料
+     * @param integer $id 会员ID
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
-    public function info()
+    public function info($id = 0)
     {
-        if (intval($this->request->request('id')) === intval(session('user.id'))) {
-            return $this->_form('SystemUser', 'user/form');
+        if (!NodeService::islogin()) {
+            $this->error('需要登录才能操作哦！');
         }
-        $this->error('只能修改当前用户的资料！');
+        $this->applyCsrfToken();
+        if (intval($id) === intval(session('admin_user.id'))) {
+            $this->_form('SystemUser', 'admin@user/form', 'id', [], ['id' => $id]);
+        } else {
+            $this->error('只能修改登录用户的资料！');
+        }
+    }
+
+    /**
+     * 清理运行缓存
+     * @auth true
+     */
+    public function clearRuntime()
+    {
+        if (!NodeService::islogin()) {
+            $this->error('需要登录才能操作哦！');
+        }
+        try {
+            Console::call('clear');
+            Console::call('xclean:session');
+            $this->success('清理运行缓存成功！');
+        } catch (HttpResponseException $exception) {
+            throw $exception;
+        } catch (\Exception $e) {
+            $this->error("清理运行缓存失败，{$e->getMessage()}");
+        }
+    }
+
+    /**
+     * 压缩发布系统
+     * @auth true
+     */
+    public function buildOptimize()
+    {
+        if (!NodeService::islogin()) {
+            $this->error('需要登录才能操作哦！');
+        }
+        try {
+            Console::call('optimize:route');
+            Console::call('optimize:schema');
+            Console::call('optimize:autoload');
+            Console::call('optimize:config');
+            $this->success('压缩发布成功！');
+        } catch (HttpResponseException $exception) {
+            throw $exception;
+        } catch (\Exception $e) {
+            $this->error("压缩发布失败，{$e->getMessage()}");
+        }
     }
 
 }

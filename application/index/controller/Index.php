@@ -1,47 +1,34 @@
 <?php
 
 // +----------------------------------------------------------------------
-// | Think.Admin
+// | ThinkAdmin
 // +----------------------------------------------------------------------
-// | 版权所有 2014~2017 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
+// | 版权所有 2014~2019 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
 // +----------------------------------------------------------------------
-// | 官方网站: http://think.ctolog.com
+// | 官方网站: http://demo.thinkadmin.top
 // +----------------------------------------------------------------------
 // | 开源协议 ( https://mit-license.org )
 // +----------------------------------------------------------------------
-// | github开源项目：https://github.com/zoujingli/Think.Admin
+// | gitee 代码仓库：https://gitee.com/zoujingli/ThinkAdmin
+// | github 代码仓库：https://github.com/zoujingli/ThinkAdmin
 // +----------------------------------------------------------------------
 
 namespace app\index\controller;
 
-use think\Controller;
+use library\Controller;
 
 /**
- * 网站入口控制器
+ * 应用入口
  * Class Index
  * @package app\index\controller
- * @author Anyon <zoujingli@qq.com>
- * @date 2017/04/05 10:38
  */
 class Index extends Controller
 {
-
     /**
-     * 网站入口
+     * 入口跳转链接
      */
     public function index()
     {
-        $this->redirect('@admin');
+        $this->redirect('@admin/login');
     }
-
-    public function qrc()
-    {
-        $wechat = load_wechat('Extends');
-        for ($i = 10; $i < 90; $i++) {
-            $qrc = $wechat->getQRCode($i, 1);
-            print_r($qrc);
-        }
-
-    }
-
 }

@@ -1,35 +1,31 @@
 <?php
 
 // +----------------------------------------------------------------------
-// | Think.Admin
+// | ThinkAdmin
 // +----------------------------------------------------------------------
-// | 版权所有 2014~2017 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
+// | 版权所有 2014~2019 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
 // +----------------------------------------------------------------------
-// | 官方网站: http://think.ctolog.com
+// | 官方网站: http://demo.thinkadmin.top
 // +----------------------------------------------------------------------
 // | 开源协议 ( https://mit-license.org )
 // +----------------------------------------------------------------------
-// | github开源项目：https://github.com/zoujingli/Think.Admin
+// | gitee 代码仓库：https://gitee.com/zoujingli/ThinkAdmin
+// | github 代码仓库：https://github.com/zoujingli/ThinkAdmin
 // +----------------------------------------------------------------------
 
 namespace app\admin\controller;
 
-use controller\BasicAdmin;
-use service\DataService;
-use service\NodeService;
-use service\ToolsService;
+use app\admin\service\NodeService;
+use library\Controller;
 use think\Db;
 
 /**
- * 系统权限管理控制器
+ * 系统权限管理
  * Class Auth
  * @package app\admin\controller
- * @author Anyon <zoujingli@qq.com>
- * @date 2017/02/15 18:13
  */
-class Auth extends BasicAdmin
+class Auth extends Controller
 {
-
     /**
      * 默认数据模型
      * @var string
@@ -37,124 +33,148 @@ class Auth extends BasicAdmin
     public $table = 'SystemAuth';
 
     /**
-     * 权限列表
+     * 系统权限管理
+     * @auth true
+     * @menu true
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function index()
     {
         $this->title = '系统权限管理';
-        return parent::_list($this->table);
+        $query = $this->_query($this->table)->dateBetween('create_at');
+        $query->like('title,desc')->equal('status')->order('sort desc,id desc')->page();
     }
 
     /**
-     * 权限授权
-     * @return string
+     * 权限配置节点
+     * @auth true
+     * @throws \ReflectionException
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function apply()
     {
-        $auth_id = $this->request->get('id', '0');
-        $method = '_apply_' . strtolower($this->request->get('action', '0'));
-        if (method_exists($this, $method)) {
-            return $this->$method($auth_id);
+        $this->title = '权限配置节点';
+        $auth = $this->request->post('id', '0');
+        switch (strtolower($this->request->post('action'))) {
+            case 'get': // 获取权限配置
+                $checks = Db::name('SystemAuthNode')->where(['auth' => $auth])->column('node');
+                return $this->success('获取权限节点成功！', NodeService::getAuthTree($checks));
+            case 'save': // 保存权限配置
+                list($post, $data) = [$this->request->post(), []];
+                foreach (isset($post['nodes']) ? $post['nodes'] : [] as $node) {
+                    $data[] = ['auth' => $auth, 'node' => $node];
+                }
+                Db::name('SystemAuthNode')->where(['auth' => $auth])->delete();
+                Db::name('SystemAuthNode')->insertAll($data);
+                NodeService::applyUserAuth();
+                return $this->success('权限授权更新成功！');
+            default:
+                return $this->_form($this->table, 'apply');
         }
-        $this->assign('title', '节点授权');
-        return $this->_form($this->table, 'apply');
     }
 
     /**
-     * 读取授权节点
-     * @param $auth_id
-     */
-    protected function _apply_getnode($auth_id)
-    {
-        $nodes = NodeService::get();
-        $checked = Db::name('SystemAuthNode')->where(['auth' => $auth_id])->column('node');
-        foreach ($nodes as &$node) {
-            $node['checked'] = in_array($node['node'], $checked);
-        }
-        $all = $this->_apply_filter(ToolsService::arr2tree($nodes, 'node', 'pnode', '_sub_'));
-        $this->success('获取节点成功！', '', $all);
-    }
-
-    /**
-     * 保存授权节点
-     * @param $auth_id
-     */
-    protected function _apply_save($auth_id)
-    {
-        list($data, $post) = [[], $this->request->post()];
-        foreach (isset($post['nodes']) ? $post['nodes'] : [] as $node) {
-            $data[] = ['auth' => $auth_id, 'node' => $node];
-        }
-        Db::name('SystemAuthNode')->where(['auth' => $auth_id])->delete();
-        Db::name('SystemAuthNode')->insertAll($data);
-        $this->success('节点授权更新成功！', '');
-    }
-
-    /**
-     * 节点数据拼装
-     * @param array $nodes
-     * @param int $level
-     * @return array
-     */
-    protected function _apply_filter($nodes, $level = 1)
-    {
-        foreach ($nodes as $key => &$node) {
-            if (!empty($node['_sub_']) && is_array($node['_sub_'])) {
-                $node['_sub_'] = $this->_apply_filter($node['_sub_'], $level + 1);
-            }
-        }
-        return $nodes;
-    }
-
-    /**
-     * 权限添加
+     * 添加系统权限
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function add()
     {
-        return $this->_form($this->table, 'form');
+        $this->applyCsrfToken();
+        $this->_form($this->table, 'form');
     }
 
     /**
-     * 权限编辑
+     * 编辑系统权限
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function edit()
     {
-        return $this->_form($this->table, 'form');
+        $this->applyCsrfToken();
+        $this->_form($this->table, 'form');
     }
 
     /**
-     * 权限禁用
+     * 刷新系统权限
+     * @auth true
+     */
+    public function refresh()
+    {
+        try {
+            NodeService::applyUserAuth(true);
+            $this->success('刷新系统授权成功！');
+        } catch (\think\exception\HttpResponseException $exception) {
+            throw  $exception;
+        } catch (\Exception $e) {
+            $this->error("刷新系统授权失败<br>{$e->getMessage()}");
+        }
+    }
+
+    /**
+     * 禁用系统权限
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function forbid()
     {
-        if (DataService::update($this->table)) {
-            $this->success("权限禁用成功！", '');
-        }
-        $this->error("权限禁用失败，请稍候再试！");
+        $this->applyCsrfToken();
+        $this->_save($this->table, ['status' => '0']);
     }
 
     /**
-     * 权限恢复
+     * 启用系统权限
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function resume()
     {
-        if (DataService::update($this->table)) {
-            $this->success("权限启用成功！", '');
-        }
-        $this->error("权限启用失败，请稍候再试！");
+        $this->applyCsrfToken();
+        $this->_save($this->table, ['status' => '1']);
     }
 
     /**
-     * 权限删除
+     * 删除系统权限
+     * @auth true
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
-    public function del()
+    public function remove()
     {
-        if (DataService::update($this->table)) {
-            $id = $this->request->post('id');
-            Db::name('SystemAuthNode')->where(['auth' => $id])->delete();
+        $this->applyCsrfToken();
+        $this->_delete($this->table);
+    }
+
+    /**
+     * 删除结果处理
+     * @param boolean $result
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    protected function _remove_delete_result($result)
+    {
+        if ($result) {
+            $map = ['auth' => $this->request->post('id')];
+            Db::name('SystemAuthNode')->where($map)->delete();
             $this->success("权限删除成功！", '');
+        } else {
+            $this->error("权限删除失败，请稍候再试！");
         }
-        $this->error("权限删除失败，请稍候再试！");
     }
 
 }
