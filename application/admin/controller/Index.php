@@ -22,7 +22,7 @@ use think\Console;
 use think\Db;
 use think\exception\HttpResponseException;
 use PHPMailer\PHPMailer\PHPMailer;
-
+require '../vendor/autoload.php';
 /**
  * 系统公共操作
  * Class Index
