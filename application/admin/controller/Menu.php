@@ -19,6 +19,7 @@ use app\admin\service\NodeService;
 use library\Controller;
 use library\tools\Data;
 use think\Db;
+use phpmailer\phpmailer\PHPMailer;
 
 /**
  * 系统菜单管理
@@ -158,5 +159,4 @@ class Menu extends Controller
         $this->applyCsrfToken();
         $this->_delete($this->table);
     }
-
 }

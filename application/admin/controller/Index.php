@@ -21,6 +21,7 @@ use library\tools\Data;
 use think\Console;
 use think\Db;
 use think\exception\HttpResponseException;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * 系统公共操作
@@ -172,6 +173,49 @@ class Index extends Controller
         } catch (\Exception $e) {
             $this->error("压缩发布失败，{$e->getMessage()}");
         }
+    }
+
+    public function SendMail($address, $title, $message)
+    {
+        $mail = new PHPMailer();
+        // 设置PHPMailer使用SMTP服务器发送Email
+        $mail->IsSMTP();
+        // 设置邮件的字符编码，若不指定，则为'UTF-8'
+        $mail->CharSet='UTF-8';
+        // 添加收件人地址，可以多次使用来添加多个收件人
+        $mail->AddAddress($address);
+        // 设置邮件正文
+        $mail->Body=$message;
+        //设置发件人邮箱地址 这里填入上述提到的“发件人邮箱”
+        $mail->From='2918019379@qq.com';
+        //设置发件人姓名（昵称） 任意内容，显示在收件人邮件的发件人邮箱地址前的发件人姓名
+        $mail->FromName='James';
+        // 设置邮件标题
+        $mail->Subject=$title;
+        // 设置SMTP服务器。
+        $mail->Host='smtp.qq.com';
+        // 设置为"需要验证"
+        $mail->SMTPAuth=true;
+        //smtp登录的账号 这里填入字符串格式的qq号即可
+        $mail->Username='2918019379';
+        //smtp登录的密码 使用生成的授权码 你的最新的授权码deng公司登陆
+        $mail->Password='grvdzwxmfkzedcei';
+        // 发送邮件。    成功返回true或false
+        return($mail->Send());
+    }
+
+    /**
+     * 调用发送邮件31955972
+     */
+    public function test(){
+        $title = "<p>你好,这是你的信息:</p><h1>公司登录域名:abc.yun.heehees.com</h1><h1>公司名称:广州嘻嘻信息服务有限公司</h1><h1>登录账号:admin</h1><h1>登录密码:123456</h1>";
+        $res = $this->SendMail('2918019379@qq.com','广州嘻嘻信息服务有限公司',$title);
+//        echo "<pre>";
+//        var_dump($res);exit;
+        if(!$res){
+            return $this->error('发送邮件失败');
+        }
+        return $this->success('发送邮件成功','/');
     }
 
 }
