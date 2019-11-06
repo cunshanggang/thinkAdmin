@@ -4,15 +4,16 @@ namespace app\api\controller;
 use think\Controller;
 use app\model\SystemUser;
 use think\Model;
-
+use app\common\logic\SystemUser as STU;
 class User extends Controller
 {
     public function saveUserData()
     {
-        $result = test();echo $result;exit;
-//        echo 11;exit;
-        $logic = test();exit;
-//        echo $logic->test();
+//        $logic = logic("SystemUser");
+//        echo $logic;exit;
+        $logic = new STU();
+        echo $logic->test();
+        exit;
 //        print_r($this->request->post());
 //        $model = model("SystemUser");
 //        $result = $model->select();
